@@ -145,7 +145,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link  " href="../pages/rtl.html">
+                <a class="nav-link  " href="{{path('readLivraisonA')}}">
+
                     <div class="material-symbols-outlined icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                         <span class="material-symbols-outlined">emoji_transportation</span>
 
@@ -377,7 +378,8 @@
             </div>
         </div>
     </nav>
-    <!-- End Navbar -->
+    <!-- End Navbar  -->
+      {% block container %}
     <div class="container-fluid py-4">
         <div class="row">
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
@@ -1025,6 +1027,7 @@
             </div>
         </footer>
     </div>
+      {% endblock %}
 </main>
 <div class="fixed-plugin">
     <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">

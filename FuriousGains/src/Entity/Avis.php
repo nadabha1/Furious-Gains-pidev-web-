@@ -8,8 +8,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 class Avis
 {
-    #[ORM\Column(name: "id_avis", type: "integer", nullable: false)]
     #[ORM\Id]
+    #[ORM\Column(name: "id_avis", type: "integer", nullable: false)]
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private ?int $idAvis;
 
@@ -22,7 +22,7 @@ class Avis
 
 #[ORM\ManyToOne(targetEntity: "User")]
 
-    private ?User $idUser;
+    private ?User $id_user;
 
     public function getIdAvis(): ?int
     {

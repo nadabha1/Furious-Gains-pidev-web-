@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Entity;
-
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -10,6 +10,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 /**
  * @method string getUserIdentifier()
  */
+#[ORM\Table(name:"User")]
 #[ORM\Entity]
 
 
@@ -17,12 +18,14 @@ class User implements UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $idUser;
+    #[ORM\Column(type:"integer")]
+
+    private ?int $id_user;
 
     #[ORM\Column]
     private ?int $cin;
     #[ORM\Column(length:255)]
+    #[Assert\Length(min: 8,max: 8,maxMessage:" 8 caractères.",minMessage: "8carac")]
 
     private ?string $nom;
 
@@ -65,14 +68,14 @@ class User implements UserInterface
   /*  #[ORM\ManyToOne(targetEntity: Codepromo::class,inversedBy: 'Users')]
     private ?Codepromo $codepromo = null;*/
 
-    public function getIdUser(): ?int
+    public function getId_user(): ?int
     {
-        return $this->idUser;
+        return $this->id_user;
     }
 
-    public function setIdUser(?int $idUser): void
+    public function setId_user(?int $id_user): void
     {
-        $this->idUser = $idUser;
+        $this->id_user = $id_user;
     }
 
     public function getCin(): ?int

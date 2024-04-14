@@ -27,7 +27,8 @@ class UserType extends AbstractType
             ->add('prenom', TextType::class, [
                 'attr' => ['class' => 'form-style', 'placeholder' => 'Votre prenom'],])
             ->add('dateuser', DateType::class, [
-                'attr' => ['class' => 'form-style', 'placeholder' => 'Votre Date de naissance'],])
+                'attr' => ['class' => 'form-style', 'placeholder' => 'Votre Date de naissance'],
+                'years' => range(date('Y') - 50, date('Y') - 18),])
             ->add('numTel', NumberType::class, [
                 'attr' => ['class' => 'form-style', 'placeholder' => 'Votre CIN'],])
             ->add('adresse', TextType::class, [
@@ -42,6 +43,7 @@ class UserType extends AbstractType
                 'attr' => ['class' => 'submitbtn mt-2'],])
         ;
     }
+
 
     public function configureOptions(OptionsResolver $resolver): void
     {

@@ -1,10 +1,12 @@
 <?php
 
 namespace App\Entity;
-
-use Cassandra\Date;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use FontLib\Table\Type\name;
 
+#[ORM\Table(name:"Livraison")]
 #[ORM\Entity]
 
 class Livraison
@@ -12,14 +14,16 @@ class Livraison
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type:"integer")]
     private ?int $idLivraison;
 
-    #[ORM\Column]
+    #[ORM\Column( type: Types::DATE_MUTABLE)]
+    #[Assert\DateTime]
 
-    private ?\DateTime $dateLivraison;
+    private ?\DateTimeInterface $dateLivraison;
 
     #[ORM\Column(length:255)]
+    #[Assert\NotBlank(message: "is vide")]
 
     private ?string $statutLivraison;
 
@@ -34,14 +38,19 @@ class Livraison
     #[ORM\Column(length:255)]
 
     private ?string $modeLivraison;
-    #[ORM\ManyToOne(targetEntity: Commande::class,inversedBy: "livraisons")]
+    #[ORM\ManyToOne(targetEntity: Commande::class)]
+    #[ORM\JoinColumn(name: "id_commande", referencedColumnName: "id_command")]
+    private ?Commande $commande;
 
-
-    private $idCommande;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    private ?User $idClient;
+    #[ORM\JoinColumn(name: "id_client", referencedColumnName: "id_user")]
+    private ?User $id_client;
 
+    public function setCommande(?Commande $commande): void
+    {
+        $this->commande = $commande;
+    }
     public function getIdLivraison(): ?int
     {
         return $this->idLivraison;
@@ -52,12 +61,12 @@ class Livraison
         $this->idLivraison = $idLivraison;
     }
 
-    public function getDateLivraison(): ?\DateTime
+    public function getDateLivraison(): ?\DateTimeInterface
     {
         return $this->dateLivraison;
     }
 
-    public function setDateLivraison(?\DateTime $dateLivraison): void
+    public function setDateLivraison(?\DateTimeInterface $dateLivraison): void
     {
         $this->dateLivraison = $dateLivraison;
     }
@@ -105,28 +114,34 @@ class Livraison
     /**
      * @return mixed
      */
-    public function getIdCommande()
+    public function getid_commande()
     {
-        return $this->idCommande;
+        return $this->id_commande;
     }
 
     /**
-     * @param mixed $idCommande
+     * @param mixed $id_commande
      */
-    public function setIdCommande($idCommande): void
+    public function setid_commande($id_commande): void
     {
-        $this->idCommande = $idCommande;
+        $this->id_commande = $id_commande;
     }
 
     public function getIdClient(): ?User
     {
-        return $this->idClient;
+        return $this->id_client;
     }
 
-    public function setIdClient(?User $idClient): void
+    public function setIdClient(?User $id_client): void
     {
-        $this->idClient = $idClient;
+        $this->id_client = $id_client;
     }
 
+
+
+    public function getCommande(): Commande
+    {
+        return $this->commande;
+    }
 
 }

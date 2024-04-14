@@ -34,7 +34,6 @@
                     </div>
                 </div>
                 <a href="contact.html" class="nav-item nav-link">Blog</a>
-                <a href="{{path('readUser')}}" class="nav-item nav-link">Profile</a>
             </div>
         </div>
     </nav>
@@ -67,23 +66,19 @@
                 </div>
                 <div class="card-body">
                     <form>
+                        {{ form_start(form) }}
+
                         <div class="row">
                             <div class="col-md-5 pr-md-1">
                                 <div class="form-group">
-                                    <label>Company (disabled)</label>
-                                    <input type="text" class="form-control" disabled="" placeholder="Company" value="Creative Code Inc.">
+                                    <label>Cin</label>
+                                    {{ form_widget(form.cin) }}
                                 </div>
                             </div>
-                            <div class="col-md-3 px-md-1">
+                            <div class="col-md-4 pr-md-1">
                                 <div class="form-group">
-                                    <label>Username</label>
-                                    <input type="text" class="form-control" placeholder="Username" value="michael23">
-                                </div>
-                            </div>
-                            <div class="col-md-4 pl-md-1">
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Email address</label>
-                                    <input type="email" class="form-control" placeholder="mike@email.com">
+                                    <label>numero tel</label>
+                                    {{ form_widget(form.numTel) }}
                                 </div>
                             </div>
                         </div>
@@ -91,13 +86,13 @@
                             <div class="col-md-6 pr-md-1">
                                 <div class="form-group">
                                     <label>First Name</label>
-                                    <input type="text" class="form-control" placeholder="Company" value="Mike">
+                                    {{ form_widget(form.nom) }}
                                 </div>
                             </div>
                             <div class="col-md-6 pl-md-1">
                                 <div class="form-group">
                                     <label>Last Name</label>
-                                    <input type="text" class="form-control" placeholder="Last Name" value="Andrew">
+                                    {{ form_widget(form.prenom) }}
                                 </div>
                             </div>
                         </div>
@@ -105,27 +100,15 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <label>Address</label>
-                                    <input type="text" class="form-control" placeholder="Home Address" value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09">
+                                    {{ form_widget(form.email) }}
                                 </div>
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-4 pr-md-1">
+                            <div class="col-md-12">
                                 <div class="form-group">
-                                    <label>City</label>
-                                    <input type="text" class="form-control" placeholder="City" value="Mike">
-                                </div>
-                            </div>
-                            <div class="col-md-4 px-md-1">
-                                <div class="form-group">
-                                    <label>Country</label>
-                                    <input type="text" class="form-control" placeholder="Country" value="Andrew">
-                                </div>
-                            </div>
-                            <div class="col-md-4 pl-md-1">
-                                <div class="form-group">
-                                    <label>Postal Code</label>
-                                    <input type="number" class="form-control" placeholder="ZIP Code">
+                                    <label for="exampleInputEmail1"> address</label>
+                                    {{ form_widget(form.adresse) }}
                                 </div>
                             </div>
                         </div>
@@ -137,6 +120,7 @@
                                 </div>
                             </div>
                         </div>
+                        {{ form_end(form) }}
                     </form>
                 </div>
                 <div class="card-footer">
@@ -182,27 +166,7 @@
             </div>
         </div>
     </div>
-<table border='1'>
-  <tr>
-      <th>ID</th>
-      <th>cin</th>
-      <th>username</th>
-      <th>email</th>
 
-  </tr>
-{% for objet in Users %}
-  <tr>
-      <td>{{ objet.idUser}}</td>
-      <td>{{ objet.cin}}</td>
-      <td>{{ objet.nom|upper }}</td>
-      <td>{{ objet.email }}</td>
-  </tr>
-   {% else %}
-
-   tableau not found!!!!!!
- {% endfor %}
-
-</table>
     <script src="{{ asset('js/core/jquery.min.js') }}"></script>
     <script src="{{ asset('js/core/popper.min.js') }}"></script>
     <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>

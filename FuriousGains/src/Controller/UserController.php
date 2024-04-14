@@ -1,12 +1,15 @@
 <?php
 
 namespace App\Controller;
+use App\Entity\Livraison;
+use App\Form\LivraisonType;
+use App\Form\UserType2;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -14,6 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+#[Route('/user')]
 
 class UserController extends AbstractController
 {
@@ -24,11 +28,66 @@ class UserController extends AbstractController
             'Users' => 'UserController',
         ]);
     }
-    #[Route('/readUser', name: 'readUser')]
-    public function readUser(UserRepository $repo): Response
-    {   $users=$repo->findAll();
+    /*#[Route('/readUser/{iduser}', name: 'readUser',methods: ['GET', 'POST'])]
+    public function readUser(UserRepository $repo,Request $request, User $user, EntityManagerInterface $entityManager,$iduser): Response
+    {   $user=$repo->findOneBy($iduser);
+        $form = $this->createForm(UserType::class, $user);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('readUser', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('user/readUser.html.twig', [
+            'form' => $form->createView(),
+            'user' => $user,
+        ]);
+    }*/
+    #[Route('/readUser/{iduser}', name: 'readUser', methods: ['GET', 'POST'])]
+    public function readUser(UserRepository $repo,ManagerRegistry $manager, Request $request, EntityManagerInterface $entityManager, $iduser): Response
+    {
+        $user = $repo->find($iduser); // Use find() instead of findOneBy()
+        if (!$user) {
+            throw $this->createNotFoundException('User not found'); // Handle the case when user is not found
+        }
+
+        $form=$this->createForm(UserType2::class,$user);
+        $form->handleRequest($request);
+        //5
+
+        if($form->isSubmitted() &&$form->isValid()){
+            //6
+            $imageFile = $form->get('image')->getData();
+
+            // if($imageFile){
+            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $newFilename = $originalFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+            try {
+                $imageFile->move(
+                    $this->getParameter('images'),
+                    $newFilename
+                );
+            } catch (FileException $e) {
+                // ... handle exception if something happens during file upload
+            }
+            $user->setImage($newFilename);
+            $em=$manager->getManager();
+            //7
+            $passwordcrybt = password_hash($user->getPassword(), PASSWORD_BCRYPT);
+            $user->setPassword($passwordcrybt);
+            $user->setId_user($iduser);
+            $em->persist($user);
+            $em->flush();
+
+           // return $this->redirectToRoute('readUser', ['iduser' => $iduser]);
+            return $this->renderForm('user/AfficherUser.html.twig',['form'=>$form->createView()], ['iduser' => $iduser]);
+
+        }
+
         return $this->render('user/AfficherUser.html.twig', [
-            'Users' => $users,
+            'form' => $form->createView(),
+            'user' => $user, ['iduser' => $iduser]
         ]);
     }
     #[Route('/Admin', name: 'Admin')]
@@ -75,6 +134,7 @@ class UserController extends AbstractController
             //8
             return $this->redirectToRoute('readUser'); }
         return $this->renderForm('user/acceuil.html.twig',['formUser'=>$form]);
+
 
     }
     #[Route('/addUser', name: 'addUser')]
@@ -138,6 +198,7 @@ class UserController extends AbstractController
             $this->session->getFlashBag()->add('error', 'L\'utilisateur n\'existe pas.');
             return $this->redirectToRoute('homee');
         }
+        
 
         // Vérifiez le mot de passe en utilisant le PasswordEncoder
         if ($passwordEncoder->isPasswordValid($user, $password)) {
@@ -145,13 +206,13 @@ class UserController extends AbstractController
                 if ($user->getRole()=="Client")
             {
                 return $this->redirectToRoute('readUser', [
-                    'User' => $user,
+                    'User' => $user,'iduser'=>$user->getCin()
                 ]);
 
             }
             elseif ($user->getRole()=="Admin"){
                 return $this->redirectToRoute('Admin', [
-                    'User' => $user,
+                    'User' => $user,'iduser'=>$user->getCin()
                 ]);
             }
             }
@@ -166,7 +227,6 @@ class UserController extends AbstractController
 
         }
 
-        // ...
     }
 
 }

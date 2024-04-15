@@ -1,0 +1,81 @@
+.img-product {
+    width: 100%; /* Assurez-vous que l'image occupe toute la largeur de la carte */
+    height: auto; /* Assurez-vous que la hauteur s'ajuste automatiquement pour conserver la proportion */
+    max-height: 150px; /* Définissez la hauteur maximale de l'image */
+    object-fit: contain; /* Affichez l'image entière à l'intérieur de la boîte */
+    object-position: center; /* Centrer l'image horizontalement et verticalement */
+}
+
+.img-products {
+    width: 100%; /* Assurez-vous que l'image occupe toute la largeur de la carte */
+    height: auto; /* Assurez-vous que la hauteur s'ajuste automatiquement pour conserver la proportion */
+    max-height: 150px; /* Définissez la hauteur maximale de l'image */
+    object-fit: contain; /* Affichez l'image entière à l'intérieur de la boîte */
+    object-position: center; /* Centrer l'image horizontalement et verticalement */
+}
+
+.custom-card {
+    width: 150px;
+    margin: auto;
+    background-color: #f8f9fa; /* Couleur de fond */
+    border: 1px solid #dee2e6; /* Bordure */
+    border-radius: 10px; /* Coins arrondis */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre */
+    transition: transform 0.3s ease; /* Animation de transition douce */
+}
+.custom-card .card-text {
+    font-size: 16px;
+    color: #666; /* Couleur du texte de la description */
+}
+
+.custom-card:hover {
+    transform: translateY(-5px); /* Animation de léger déplacement vers le haut lors du survol */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Ombre lors du survol */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animation de transition pour la transformation et l'ombre */
+}
+
+.custom-card .card-body {
+    padding: 20px;
+}
+
+.custom-card .card-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333; /* Couleur du texte du titre */
+}
+.pagination {
+    display: flex;
+    justify-content: center;
+}
+
+.pagination .pagination-item {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    color: #333;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.pagination .pagination-item:hover {
+    background-color: #f0f0f0;
+}
+
+.pagination .pagination-item.active {
+    background-color: #007bff;
+    color: #fff;
+}
+.cart-bar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px; /* Ajustez la largeur selon vos besoins */
+    height: 100%; /* Ajustez la hauteur selon vos besoins */
+    background-color: white;
+    z-index: 1000; /* Assurez-vous que la barre de panier s'affiche au-dessus de tout le contenu */
+    overflow-y: auto; /* Si le contenu dépasse la hauteur de la barre de panier, ajoutez une barre de défilement */
+    padding: 20px;
+    display: none; /* Masquez la barre de panier par défaut */
+}

@@ -25,7 +25,7 @@ class Commande
     private ?float $montantTotal;
 
     #[ORM\ManyToOne(targetEntity: "Produit")]
-    private ?Produit $idProduit;
+    private ?Produit $id_Produit;
 
 
 }

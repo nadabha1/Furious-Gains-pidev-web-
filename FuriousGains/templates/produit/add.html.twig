@@ -1,0 +1,21 @@
+
+
+
+
+
+{% block title %}Ajouter un Produit{% endblock %}
+
+{% block body %}
+    <h1>Ajouter un Produit</h1>
+    
+    {{ form_start(f) }}
+        {{ form_row(f.marque_produit) }}
+        {{ form_row(f.quantite) }}
+        {{ form_row(f.prix_produit) }}
+        {{ form_row(f.description) }}
+        {{ form_row(f.image_name) }}
+        {# Ajoutez d'autres champs du formulaire si nécessaire #}
+
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+    {{ form_end(f) }}
+{% endblock %}

@@ -46,7 +46,7 @@
         <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
             <div class="navbar-nav ml-auto p-4 bg-secondary">
                 <a href="{{path('homee')}}" class="nav-item nav-link active">Home</a>
-                <a href="{{asset('../feature.html.twig')}}" class="nav-item nav-link">Produit</a>
+                <a href="{{path('read_produit')}}" class="nav-item nav-link">Produit</a>
                 <a href="feature.html" class="nav-item nav-link">Livraison</a>
                 <a href="class.html" class="nav-item nav-link">Evenement</a>
                 <div class="nav-item dropdown">
@@ -929,34 +929,27 @@
                                 </form>
                                 <!-- HERE ================================================================================================================================= -->
                                 <form class="card-back " method="POST"  enctype="multipart/form-data"                     >
-                                    {{form_start(formUser)}}
                                     <div class="form  form-active  ">
                                         <h4 class="pb-3">Sign Up</h4>
                                         <a href="#" id="closebtn-signup"><i class="icon-close uil uil-times-circle"></i></a>
 
                                         <div class="form-group ">
-                                            {{ form_widget(formUser.cin) }}
                                             <i class="input-icon uil uil-user"></i>
                                         </div>
                                         <div class="form-group ">
-                                            {{ form_widget(formUser.nom) }}
                                             <i class="input-icon uil uil-user"></i>
                                         </div>
                                         <div class="form-group ">
-                                            {{ form_widget(formUser.prenom) }}
                                             <i class="input-icon uil uil-user"></i>
                                         </div>
                                         <div class="form-group mt-2">
-                                            {{ form_widget( formUser.email) }}
                                             <i class="input-icon uil uil-at"></i>
                                         </div>
 
                                         <div class="form-group mt-2">
-                                            {{ form_widget( formUser.password) }}
                                             <i class="input-icon uil uil-lock-alt"></i>
                                         </div>
                                         <div class="form-group mt-2">
-                                            {{ form_widget( formUser.dateuser) }}
                                             <i class="input-icon uil uil-calendar-alt"></i>
                                         </div>
                                         <button class="form__btn" id="btn-1">Next</button>
@@ -965,24 +958,22 @@
                                         <h4 class="pb-3">Sign Up</h4>
                                         <a href="#" id="closebtn-signup"><i class="icon-close uil uil-times-circle"></i></a>
                                         <div class="form-group mt-2">
-                                            {{ form_widget( formUser.numTel) }}
                                             <i class="input-icon uil uil-lock-alt"></i>
                                         </div>
                                         <div class="form-group mt-2">
-                                            {{ form_widget( formUser.adresse) }}
+                                            
                                             <i class="input-icon uil uil-lock-alt"></i>
                                         </div>
                                         <div class="form-group mt-2">
-                                            {{ form_widget( formUser.image) }}
+                                           
 
                                             <i class="input-icon uil uil-calendar-alt"></i>
                                         </div>
                                         <button class="form__btn" id="btn-3-prev">Previous</button>
                                         <button class="form__btn invis" id="btn-3"></button>
-                                        {{ form_widget( formUser.Ajouter) }}
 
                                     </div>
-                                    {{form_end(formUser)}}
+                                   
                                 </form>
                             </div>
                         </div>

@@ -12,44 +12,44 @@ class Categorie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $idCategorie;
+    private ?int $id_categorie;
 
     #[ORM\Column(length:255)]
 
-    private ?string $nomCategorie;
+    private ?string $nom_categorie;
 
     #[ORM\Column(length:255)]
 
-    private ?string $descriptionc;
+    private ?string $descriptionC;
 
     public function getIdCategorie(): ?int
     {
-        return $this->idCategorie;
+        return $this->id_categorie;
     }
 
-    public function setIdCategorie(?int $idCategorie): void
+    public function setIdCategorie(?int $id_categorie): void
     {
-        $this->idCategorie = $idCategorie;
+        $this->id_categorie = $id_categorie;
     }
 
     public function getNomCategorie(): ?string
     {
-        return $this->nomCategorie;
+        return $this->nom_categorie;
     }
 
-    public function setNomCategorie(?string $nomCategorie): void
+    public function setNomCategorie(?string $nom_categorie): void
     {
-        $this->nomCategorie = $nomCategorie;
+        $this->nom_categorie = $nom_categorie;
     }
 
-    public function getDescriptionc(): ?string
+    public function getDescriptionC(): ?string
     {
-        return $this->descriptionc;
+        return $this->descriptionC;
     }
 
-    public function setDescriptionc(?string $descriptionc): void
+    public function setDescriptionC(?string $descriptionC): void
     {
-        $this->descriptionc = $descriptionc;
+        $this->descriptionC = $descriptionC;
     }
 
 

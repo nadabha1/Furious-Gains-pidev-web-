@@ -1,0 +1,103 @@
+{% extends 'Adminbase.html.twig' %}
+
+{% block title %}Edit Evenement{% endblock %}
+
+{% block body %}
+<main class="main-content mt-0">
+    <section>
+    <a href="{{ path('admin_evenement_index', {'user_id': user_id}) }}" class="btn btn-primary">Back to List</a>
+
+        <div class="page-header min-vh-75">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-4 col-lg-5 col-md-6 d-flex flex-column mx-auto">
+                        <div class="card card-plain mt-8">
+                            <div class="card-header pb-0 text-left bg-transparent">
+                                <h3 class="font-weight-bolder text-info text-gradient">Edit Event</h3>
+                                <p class="mb-0">Update event details</p>
+                            </div>
+                            <div class="card-body">
+                               <form method="post" action="{{ path('app_evenement_edit', {'id': evenement.id_event, 'user_id': user_id}) }}">
+    {{ form_widget(form._token) }}
+    <div class="mb-3">
+        <label for="nomEvent" class="form-label">Event Name</label>
+        <input type="text" id="nomEvent" name="evenement[nomEvent]" class="form-control" placeholder="Event Name" aria-label="Event Name" aria-describedby="nomEvent-addon" value="{{ evenement.nomEvent }}">
+        {% if form_errors(form.nomEvent) %}
+            <div class="alert alert-danger" role="alert">
+                {{ form_errors(form.nomEvent) }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        <label for="lieuEvent" class="form-label">Location</label>
+        <input type="text" id="lieuEvent" name="evenement[lieuEvent]" class="form-control" placeholder="Location" aria-label="Location" aria-describedby="lieuEvent-addon" value="{{ evenement.lieuEvent }}">
+        {% if form_errors(form.lieuEvent) %}
+            <div class="alert alert-danger" role="alert">
+                {{ form_errors(form.lieuEvent) }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        <label for="prixEvent" class="form-label">Price</label>
+        <input type="number" id="prixEvent" name="evenement[prixEvent]" class="form-control" placeholder="Price" aria-label="Price" aria-describedby="prixEvent-addon" value="{{ evenement.prixEvent }}">
+        {% if form_errors(form.prixEvent) %}
+            <div class="alert alert-danger" role="alert">
+                {{ form_errors(form.prixEvent) }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        <label for="nbParticipation" class="form-label">Number of Participants</label>
+        <input type="number" id="nbParticipation" name="evenement[nbParticipation]" class="form-control" placeholder="Number of Participants" aria-label="Number of Participants" aria-describedby="nbParticipation-addon" value="{{ evenement.nbParticipation }}">
+        {% if form_errors(form.nbParticipation) %}
+            <div class="alert alert-danger" role="alert">
+                {{ form_errors(form.nbParticipation) }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        <label for="dateEvent" class="form-label">Date</label>
+        {{ form_widget(form.dateEvent, {'attr': {'class': 'form-control', 'placeholder': 'Date'}, 'value': evenement.dateEvent|date('Y-m-d') }) }}
+        {% if form_errors(form.dateEvent) %}
+            <div class="alert alert-danger" role="alert">
+                {{ form_errors(form.dateEvent) }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        <label for="heureEvent" class="form-label">Time</label>
+        <input type="text" id="heureEvent" name="evenement[heureEvent]" class="form-control" placeholder="Time" aria-label="Time" aria-describedby="heureEvent-addon" value="{{ evenement.heureEvent }}">
+        {% if form_errors(form.heureEvent) %}
+            <div class="alert alert-danger" role="alert">
+                {{ form_errors(form.heureEvent) }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description</label>
+        <textarea id="description" name="evenement[description]" class="form-control" placeholder="Description" aria-label="Description" aria-describedby="description-addon" rows="4">{{ evenement.description }}</textarea>
+        {% if form_errors(form.description) %}
+            <div class="alert alert-danger" role="alert">
+                {{ form_errors(form.description) }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="text-center">
+        <button type="submit" class="btn bg-gradient-info w-100 mt-4 mb-0">Update Event</button>
+    </div>
+</form>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
+                            <div class="oblique-image bg-cover position-absolute fixed-top ms-auto h-100 z-index-0 ms-n6" style="background-image:url('../assets/img/curved-images/curved6.jpg')"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+{% endblock %}

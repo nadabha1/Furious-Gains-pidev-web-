@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+
+{% block banner %}
+<!-- Carousel Start -->
+  <div class="container-fluid page-header mb-5">
+        <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 600px">
+            <h4 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase font-weight-bold">Our Events</h4>
+            <div class="d-inline-flex">
+                <p class="m-0 text-white"><a class="text-white" href="">Events</a></p>
+                <p class="m-0 text-white px-2">/</p>
+                <p class="m-0 text-white">Details</p>
+            </div>
+        </div>
+    </div>
+<!-- Carousel End -->
+    {% endblock %}
+{% block body %}
+    <div class="container py-5">
+        <div class="row">
+            <div class="col-12">
+                <img class="img-fluid mb-4" src="{{ asset('img/carousel-1.jpg') }}" alt="Image">
+                <div class="d-flex align-items-center mb-4">
+                    <div class="d-flex flex-column align-items-center justify-content-center rounded-circle bg-primary text-white" style="width: 100px; height: 100px;">
+                        <span>{{ evenement.dateEvent ? evenement.dateEvent|date('d') : '' }}</span>
+                        <strong class="text-uppercase m-0 text-white">{{ evenement.dateEvent ? evenement.dateEvent|date('M') : '' }}</strong>
+                        <span>{{ evenement.dateEvent ? evenement.dateEvent|date('Y') : '' }}</span>
+                    </div>
+                    <div class="pl-3">
+                        <h1 class="font-weight-bold mb-3">{{ evenement.nomEvent }} </h1>
+                        <h1><span class="text-danger"> Price : {{ evenement.prixEvent }}</span></h1>
+                        <div class="d-flex">
+                            <span class="mr-2 text-muted"><i class="fa fa-map-marker"></i> {{ evenement.lieuEvent }}</span>
+                        </div>
+                         <div class="d-flex">
+                            <span class="mr-2 text-muted"><i class="fa fa-user"></i> {{ evenement.nbParticipation }} Participants</span>
+                        </div>
+                        <div class="d-flex">
+                            <span class="mr-2 text-muted"><i class="fa fa-clock"></i> {{ evenement.heureEvent}}</span>
+                        </div>
+                    </div>
+                </div>
+                <p>{{ evenement.description }}</p>
+            </div>
+            
+            <a href="{{ path('app_reservation_new', {'user_id': user_id , 'Event_id': evenement.id_event}) }}" class="btn btn-primary">Join Now !</a>
+
+        </div><br>
+            <a href="{{ path('app_evenement_index', {'user_id': user_id}) }}" class="btn btn-primary">Back to List</a>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'Adminbase.html.twig' %}
+
+{% block banner %}
+<!-- Carousel Start -->
+<div class="container-fluid page-header mb-5">
+    <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 600px">
+        <h4 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase font-weight-bold">Admin Reservations</h4>
+        <div class="d-inline-flex">
+            <p class="m-0 text-white"><a class="text-white" href="">Event</a></p>
+            <p class="m-0 text-white px-2">/</p>
+            <p class="m-0 text-white">Admin Reservations</p>
+        </div>
+    </div>
+</div>
+<!-- Carousel End -->
+{% endblock %}
+
+{% block body %}
+<h1>Admin Reservations</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>NbPlace</th>
+            <th>StatusRes</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for reservation in reservations %}
+        <tr>
+            <td>{{ reservation.nbPlace }}</td>
+            <td>{{ reservation.statusRes }}</td>
+            <td>
+                
+                            <form action="{{ path('app_reservation_approve', {'id': reservation.id_Res, 'user_id': user_id}) }}" method="post">
+                <input type="hidden" name="_method" value="PUT">
+                <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ reservation.id_Res) }}">
+                <button type="submit" class="btn btn-success btn-sm">Approve</button>
+            </form>
+
+
+                    <form action="{{ path('app_reservation_decline', {'id': reservation.id_Res, 'user_id': user_id}) }}" method="post">
+                        <input type="hidden" name="_method" value="PUT">
+                        <input type="hidden" name="_token" value="{{ csrf_token('decline' ~ reservation.id_Res) }}">
+                        <button type="submit" class="btn btn-warning btn-sm">Decline</button>
+                    </form>
+
+
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="3">No Reservation found</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<a href="{{ path('admin_evenement_index', {'user_id': user_id}) }}" class="btn btn-primary">Back to List</a>
+{% endblock %}

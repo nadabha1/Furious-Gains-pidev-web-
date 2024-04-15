@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block banner %}
+<!-- Carousel Start -->
+  <div class="container-fluid page-header mb-5">
+        <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 600px">
+            <h4 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase font-weight-bold">Submit Reservation</h4>
+            <div class="d-inline-flex">
+                <p class="m-0 text-white"><a class="text-white" href="">Event</a></p>
+                <p class="m-0 text-white px-2">/</p>
+                <p class="m-0 text-white">Reservation</p>
+            </div>
+        </div>
+    </div>
+<!-- Carousel End -->
+    {% endblock %}
+{% block body %}
+
+    {{ include('reservation/ClientView/_form.html.twig', {'user_id': user_id, 'Event_id': Event_id}) }}
+
+<a href="{{ path('app_evenement_index', {'user_id': user_id}) }}">back to Events</a>
+{% endblock %}

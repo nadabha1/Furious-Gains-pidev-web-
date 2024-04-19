@@ -30,7 +30,7 @@ class UserType extends AbstractType
                 'attr' => ['class' => 'form-style', 'placeholder' => 'Votre Date de naissance'],
                 'years' => range(date('Y') - 50, date('Y') - 18),])
             ->add('numTel', NumberType::class, [
-                'attr' => ['class' => 'form-style', 'placeholder' => 'Votre CIN'],])
+                'attr' => ['class' => 'form-style', 'placeholder' => 'Votre numtel'],])
             ->add('adresse', TextType::class, [
                 'attr' => ['class' => 'form-style', 'placeholder' => 'Votre adresse'],])
             ->add('email', EmailType::class, [

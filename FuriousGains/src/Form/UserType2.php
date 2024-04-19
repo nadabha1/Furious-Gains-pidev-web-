@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Form;
 
 use App\Entity\User;
@@ -19,26 +18,26 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class UserType2 extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
-    {  $builder
-        ->add('cin', NumberType::class, [
-            'attr' => ['class' => 'form-control', 'placeholder' => 'Votre CIN'],])
-        ->add('nom', TextType::class, [
-            'attr' => ['class' => 'form-control', 'placeholder' => 'Votre nom'],])
-        ->add('prenom', TextType::class, [
-            'attr' => ['class' => 'form-control', 'placeholder' => 'Votre prenom'],])
-        ->add('dateuser', DateType::class, [
-            'attr' => ['class' => 'form-control', 'placeholder' => 'Votre Date de naissance'],])
-        ->add('numTel', NumberType::class, [
-            'attr' => ['class' => 'form-control', 'placeholder' => 'Votre CIN'],])
-        ->add('adresse', TextType::class, [
-            'attr' => ['class' => 'form-control', 'placeholder' => 'Votre adresse'],])
-        ->add('email', EmailType::class, [
-            'attr' => ['class' => 'form-control', 'placeholder' => 'Votre email'],])
-        ->add('image', TextType::class, [
-            'attr' => ['class' => 'form-control', 'placeholder' => 'Votre image'],])
-        ->add('Modifier', SubmitType::class, [
-            'attr' => ['class' => 'submitbtn mt-2'],])
-    ;
+    {
+        $builder
+            ->add('cin', NumberType::class, [
+                'attr' => ['class' => 'form-style', 'placeholder' => 'Votre CIN'],])
+            ->add('nom', TextType::class, [
+                'attr' => ['class' => 'form-style', 'placeholder' => 'Votre nom'],])
+            ->add('prenom', TextType::class, [
+                'attr' => ['class' => 'form-style', 'placeholder' => 'Votre prenom'],])
+            ->add('dateuser', DateType::class, [
+                'attr' => ['class' => 'form-style', 'placeholder' => 'Votre Date de naissance'],
+                'years' => range(date('Y') - 50, date('Y') - 18),])
+            ->add('numTel', NumberType::class, [
+                'attr' => ['class' => 'form-style', 'placeholder' => 'Votre numtel'],])
+            ->add('adresse', TextType::class, [
+                'attr' => ['class' => 'form-style', 'placeholder' => 'Votre adresse'],])
+            ->add('email', EmailType::class, [
+                'attr' => ['class' => 'form-style', 'placeholder' => 'Votre email'],])
+            ->add('Mod', SubmitType::class, [
+                'attr' => ['class' => 'submitbtn mt-2'],])
+        ;
     }
 
 

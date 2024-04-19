@@ -19,13 +19,12 @@ class User implements UserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type:"integer")]
-
     private ?int $id_user;
 
     #[ORM\Column]
+    #[Assert\Length(min: 8,max: 8,maxMessage:" 8 caractères.",minMessage: "8carac")]
     private ?int $cin;
     #[ORM\Column(length:255)]
-    #[Assert\Length(min: 8,max: 8,maxMessage:" 8 caractères.",minMessage: "8carac")]
 
     private ?string $nom;
 
@@ -37,19 +36,20 @@ class User implements UserInterface
     private  ?\DateTimeInterface $dateuser ;
 
     #[ORM\Column(name: "num_tel", type: "integer", nullable: false)]
-
+    #[Assert\NotBlank(message: "Ce champ est obligatoire.")]
     private ?int $numTel;
 
     #[ORM\Column(name: "adresse", type: "string", length: 255, nullable: false)]
-
+    #[Assert\NotBlank(message: "Ce champ est obligatoire.")]
     private ?string $adresse;
-
+    #[Assert\NotBlank(message: "Ce champ est obligatoire.")]
+    #[Assert\Email(message: "Veuillez entrer une adresse email valide.")]
     #[ORM\Column(name: "email", type: "string", length: 255, nullable: false)]
 
     private ?string $email;
 
     #[ORM\Column(name: "password", type: "string", length: 255, nullable: false)]
-
+    #[Assert\NotBlank(message: "Ce champ est obligatoire.")]
     private ?string $password;
 
     #[ORM\Column(name: "role", type: "string", length: 255, nullable: false, options: ["default" => "'Client'"])]

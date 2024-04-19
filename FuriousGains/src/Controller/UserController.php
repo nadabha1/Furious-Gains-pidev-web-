@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Controller;
-use App\Entity\Livraison;
-use App\Form\LivraisonType;
 use App\Form\UserType2;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -21,6 +19,15 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class UserController extends AbstractController
 {
+    #[Route('/delete/{iduser}', name: 'Delete')]
+    public function Deleteuser(UserRepository $repo,$iduser,ManagerRegistry $manager){
+        $obj=$repo->find($iduser);
+        $em=$manager->getManager();
+        $em->remove($obj);
+        $em->flush();
+        return $this->redirectToRoute('Admin');
+
+    }
     #[Route('/user', name: 'app_user')]
     public function index(): Response
     {
@@ -28,66 +35,51 @@ class UserController extends AbstractController
             'Users' => 'UserController',
         ]);
     }
-    /*#[Route('/readUser/{iduser}', name: 'readUser',methods: ['GET', 'POST'])]
-    public function readUser(UserRepository $repo,Request $request, User $user, EntityManagerInterface $entityManager,$iduser): Response
-    {   $user=$repo->findOneBy($iduser);
-        $form = $this->createForm(UserType::class, $user);
+    #[Route('/{iduser}/edit', name: 'editt', methods: ['GET', 'POST'])]
+    public function edit(Request $request,UserRepository $repo,$iduser, EntityManagerInterface $entityManager): Response
+    { $user = $repo->findOneBy(['id_user' => $iduser]);
+        $form = $this->createForm(UserType2::class, $user);
         $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('readUser', [], Response::HTTP_SEE_OTHER);
-        }
+            return $this->redirectToRoute('readUser', [
+                'form' => $form->createView(),
+                'User' => $user,
+                ['iduser' => $iduser]
+            ]);        }
 
-        return $this->render('user/readUser.html.twig', [
-            'form' => $form->createView(),
-            'user' => $user,
+        return $this->renderForm('user/aditAmin.html.twig', [
+            'User' => $user,
+            'form' => $form,
+            ['iduser' => $iduser]
         ]);
-    }*/
+    }
     #[Route('/readUser/{iduser}', name: 'readUser', methods: ['GET', 'POST'])]
-    public function readUser(UserRepository $repo,ManagerRegistry $manager, Request $request, EntityManagerInterface $entityManager, $iduser): Response
+    public function readUser(UserRepository $repo,EntityManagerInterface $manager, Request $request, $iduser): Response
     {
-        $user = $repo->find($iduser); // Use find() instead of findOneBy()
+        $user = $repo->findOneBy(['id_user' => $iduser]);
         if (!$user) {
             throw $this->createNotFoundException('User not found'); // Handle the case when user is not found
         }
-
         $form=$this->createForm(UserType2::class,$user);
         $form->handleRequest($request);
         //5
-
-        if($form->isSubmitted() &&$form->isValid()){
-            //6
-            $imageFile = $form->get('image')->getData();
-
-            // if($imageFile){
-            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-            $newFilename = $originalFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
-            try {
-                $imageFile->move(
-                    $this->getParameter('images'),
-                    $newFilename
-                );
-            } catch (FileException $e) {
-                // ... handle exception if something happens during file upload
-            }
-            $user->setImage($newFilename);
-            $em=$manager->getManager();
-            //7
-            $passwordcrybt = password_hash($user->getPassword(), PASSWORD_BCRYPT);
-            $user->setPassword($passwordcrybt);
-            $user->setId_user($iduser);
-            $em->persist($user);
-            $em->flush();
-
+        if ($form->isSubmitted() && $form->isValid()) {
+            $manager->flush();
            // return $this->redirectToRoute('readUser', ['iduser' => $iduser]);
-            return $this->renderForm('user/AfficherUser.html.twig',['form'=>$form->createView()], ['iduser' => $iduser]);
+            return $this->renderForm('user/AfficherUser.html.twig', [
+                'form' => $form->createView(),
+                'User' => $user,
+                'iduser' => $iduser
+            ]);
 
         }
-
         return $this->render('user/AfficherUser.html.twig', [
             'form' => $form->createView(),
-            'user' => $user, ['iduser' => $iduser]
+            'User' => $user,
+            ['iduser' => $iduser]
         ]);
     }
     #[Route('/Admin', name: 'Admin')]
@@ -132,11 +124,13 @@ class UserController extends AbstractController
             $em->persist($user);
             $em->flush();
             //8
-            return $this->redirectToRoute('readUser'); }
+            return $this->redirectToRoute('homee'); }
         return $this->renderForm('user/acceuil.html.twig',['formUser'=>$form]);
 
 
     }
+
+
     #[Route('/addUser', name: 'addUser')]
     public function addUser(ManagerRegistry $manager,Request $request): Response
     {   $user =new User();
@@ -172,7 +166,7 @@ class UserController extends AbstractController
         $em->persist($user);
         $em->flush();
         //8
-       return $this->redirectToRoute('readUser'); }
+       return $this->redirectToRoute('homee'); }
        return $this->renderForm('user/acceuil.html.twig',['formUser'=>$form]);
       
     }

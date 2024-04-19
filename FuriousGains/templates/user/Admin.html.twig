@@ -55,10 +55,8 @@
                                     <span class="text-secondary text-xs font-weight-bold">{{ objet.dateuser|date('Y-m-d') }}</span>
                                 </td>
                                 <td class="align-middle">
-                                    <a href="javascript:;" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit user">
-                                        Edit
-                                    </a>
-                                </td>
+
+                                    <a href="{{ path('Delete', {'iduser': objet.id_user}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr ?')">Supprimer</a>                                </td>
                             </tr>
 
 

@@ -33,14 +33,16 @@
                 <a href="{{ path('app_evenement_edit', {'id': evenement.id_event, 'user_id': user_id}) }}" class="btn btn-success">Edit</a>
                 <!-- Delete Form -->
                 <form method="post" action="{{ path('app_evenement_delete', {'id': evenement.id_event, 'user_id': user_id}) }}" onsubmit="return confirm('Are you sure you want to delete this event?')">
-    <input type="hidden" name="_method" value="DELETE">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id_event) }}">
-    <button type="submit" class="btn btn-danger">Delete</button>
-</form>
+                    <input type="hidden" name="_method" value="DELETE">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ evenement.id_event) }}">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
 
                 <!-- Show Reservations Button -->
-            <a href="{{ path('app_evenement_show_reservations', {'Event_id': evenement.id_event, 'user_id': user_id}) }}" class="btn btn-info">Show Reservations</a>
+                <a href="{{ path('app_evenement_show_reservations', {'Event_id': evenement.id_event, 'user_id': user_id}) }}" class="btn btn-info">Show Reservations</a>
 
+                <!-- Generate PDF Button -->
+<a href="{{ path('app_evenement_generate_pdf', {'id': evenement.id_event, 'user_id': user_id , 'eventId': evenement.id_event }) }}" class="btn btn-secondary">Generate PDF</a>
             </div>
         </div>
         {% else %}

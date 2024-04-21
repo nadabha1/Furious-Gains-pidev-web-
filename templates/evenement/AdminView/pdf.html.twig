@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Event Details PDF</title>
+    <style>
+        /* Define your styles for the PDF content */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        /* Add more styles as needed */
+    </style>
+</head>
+<body>
+    <h1>{{ event.nomEvent }}</h1>
+    <p>Description: {{ event.description }}</p>
+    <p>Lieu: {{ event.lieuEvent }}</p>
+    <p>Date: {{ event.dateEvent|date('Y-m-d') }}</p>
+    <p>Time: {{ event.heureEvent }}</p>
+    <p>Participants: {{ event.nbParticipation }}</p>
+
+    <h2>Reservations</h2>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>nb Places</th>
+                <th>Status</th>
+                <!-- Add more reservation fields as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for reservation in reservations %}
+                <tr>
+                    <td>{{ reservation.nbPlace }}</td>
+                    <td>{{ reservation.statusRes }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

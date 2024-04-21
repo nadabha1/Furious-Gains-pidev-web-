@@ -1,0 +1,16 @@
+{# templates/evenement/filtered_evenements.html.twig #}
+{% for evenement in filteredEvenements %}
+    <div class="col-md-6 mb-4">
+        <div class="gym-class-box d-flex flex-column align-items-end justify-content-center bg-primary text-right text-white py-5 px-5">
+            <h3 class="display-4 mb-3 text-white font-weight-bold">{{ evenement.nomEvent }}</h3>
+            <p>{{ evenement.description }}</p>
+            <a href="{{ path('app_evenement_show', {'id': evenement.id_event, 'user_id': user_id}) }}" class="btn btn-lg btn-outline-light mt-4 px-4">Show Details</a>
+        </div>
+    </div>
+{% else %}
+    <div class="col-md-12">
+        <div class="alert alert-info" role="alert">
+            No events found.
+        </div>
+    </div>
+{% endfor %}

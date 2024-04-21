@@ -1,3 +1,12 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+
+app_filter_evenement:
+    path: /filter-evenement
+    controller: App\Controller\EvenementController::filterEvenements
+
+
+app_evenement_generate_pdf:
+    path: /evenement/{id}/generate-pdf/{user_id}/{eventId}
+    controller: App\Controller\EvenementController::generatePdf

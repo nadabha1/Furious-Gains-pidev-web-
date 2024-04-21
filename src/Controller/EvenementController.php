@@ -10,6 +10,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 #[Route('/evenement/{user_id}')]
 class EvenementController extends AbstractController
@@ -114,5 +116,64 @@ class EvenementController extends AbstractController
             throw $e;
         }
     }
+
+    public function filterEvenements(Request $request): Response
+    {
+        $searchText = $request->query->get('search');
+
+        // Fetch events from the database or any other data source
+        $repository = $this->getDoctrine()->getRepository(Evenement::class);
+        $filteredEvenements = $repository->createQueryBuilder('e')
+            ->andWhere('e.titre LIKE :searchText')
+            ->setParameter('searchText', '%' . $searchText . '%')
+            ->getQuery()
+            ->getResult();
+
+        // Render the filtered events as HTML (replace this with your logic)
+        $html = $this->renderView('evenement/filtered_evenements.html.twig', [
+            'filteredEvenements' => $filteredEvenements,
+        ]);
+
+        // Return JSON response with HTML content
+        return $this->json(['html' => $html]);
+    }
     
+
+    public function generatePdf($id, $user_id, $eventId): Response
+{
+    // Fetch event and reservations data (you may need to adjust this based on your entity structure)
+    $event = $this->getDoctrine()->getRepository(Evenement::class)->find($eventId);
+    $reservations = $event->getReservations();
+
+    // Load the PDF template (you'll create this next)
+    $html = $this->renderView('evenement/AdminView/pdf.html.twig', [
+        'event' => $event,
+        'eventId' => $eventId,
+        'reservations' => $reservations,
+    ]);
+
+    // Configure Dompdf options
+    $options = new Options();
+    $options->set('isHtml5ParserEnabled', true);
+
+    // Instantiate Dompdf
+    $dompdf = new Dompdf($options);
+    $dompdf->loadHtml($html);
+
+    // Set paper size and orientation (optional)
+    $dompdf->setPaper('A4', 'portrait');
+
+    // Render the HTML as PDF
+    $dompdf->render();
+
+    // Stream the generated PDF to the browser
+    $pdfContent = $dompdf->output();
+    
+    // Set HTTP headers for PDF download
+    $response = new Response($pdfContent);
+    $response->headers->set('Content-Type', 'application/pdf');
+    $response->headers->set('Content-Disposition', 'attachment; filename="event_details.pdf"');
+
+    return $response;
+}
 }

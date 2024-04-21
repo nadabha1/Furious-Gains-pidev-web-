@@ -1,42 +1,87 @@
 {% extends 'base.html.twig' %}
 
-
 {% block banner %}
 <!-- Carousel Start -->
-  <div class="container-fluid page-header mb-5">
-        <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 600px">
-            <h4 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase font-weight-bold">Our Events</h4>
-            <div class="d-inline-flex">
-                <p class="m-0 text-white"><a class="text-white" href="">Home</a></p>
-                <p class="m-0 text-white px-2">/</p>
-                <p class="m-0 text-white">Events</p>
-            </div>
+<div class="container-fluid page-header mb-5">
+    <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 600px">
+        <h4 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase font-weight-bold">Our Events</h4>
+        <div class="d-inline-flex">
+            <p class="m-0 text-white"><a class="text-white" href="">Home</a></p>
+            <p class="m-0 text-white px-2">/</p>
+            <p class="m-0 text-white">Events</p>
         </div>
     </div>
+</div>
 <!-- Carousel End -->
-    {% endblock %}
-{% block body %}
-        <a href="{{ path('app_reservation_index', {'user_id': user_id}) }}" class="btn btn-primary">My Reservations </a>
+{% endblock %}
 
-    <div class="container gym-class mb-5">
-        <div class="row px-3">
-            {% for evenement in evenements %}
-                <div class="col-md-6 mb-4">
-                    <div class="gym-class-box d-flex flex-column align-items-end justify-content-center bg-primary text-right text-white py-5 px-5">
-                        <h3 class="display-4 mb-3 text-white font-weight-bold">{{ evenement.nomEvent }}</h3>
-                        <p>
-                            {{ evenement.description }}
-                        </p>
-<a href="{{ path('app_evenement_show', {'id': evenement.id_event, 'user_id': user_id}) }}" class="btn btn-lg btn-outline-light mt-4 px-4">Show Details</a>
-                    </div>
+{% block body %}
+<a href="{{ path('app_reservation_index', {'user_id': user_id}) }}" class="btn btn-primary">My Reservations</a>
+
+<!-- Search Bar -->
+<div class="container mt-4 mb-4">
+    <input type="text" id="searchInput" class="form-control" placeholder="Search by title...">
+</div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<!-- Events Display -->
+<div class="container gym-class mb-5">
+    <div class="row px-3" id="eventsList">
+        {% for evenement in evenements %}
+            <div class="col-md-6 mb-4">
+                <div class="gym-class-box d-flex flex-column align-items-end justify-content-center bg-primary text-right text-white py-5 px-5">
+                    <h3 class="display-4 mb-3 text-white font-weight-bold">{{ evenement.nomEvent }}</h3>
+                    <p>{{ evenement.description }}</p>
+                    <a href="{{ path('app_evenement_show', {'id': evenement.id_event, 'user_id': user_id}) }}" class="btn btn-lg btn-outline-light mt-4 px-4">Show Details</a>
                 </div>
-            {% else %}
-                <div class="col-md-12">
-                    <div class="alert alert-info" role="alert">
-                        No events found.
-                    </div>
+            </div>
+        {% else %}
+            <div class="col-md-12">
+                <div class="alert alert-info" role="alert">
+                    No events found.
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        {% endfor %}
     </div>
+</div>
+
+{% block javascripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.getElementById('searchInput');
+        const eventsList = document.getElementById('eventsList');
+        const allEvents = Array.from(document.querySelectorAll('.gym-class-box'));
+
+        searchInput.addEventListener('input', () => {
+            const searchText = searchInput.value.trim().toLowerCase();
+
+            eventsList.innerHTML = ''; // Clear previous results
+
+            allEvents.forEach(event => {
+                const title = event.querySelector('h3').innerText.toLowerCase();
+                if (searchText === '' || title.includes(searchText)) {
+                    eventsList.appendChild(event.parentNode.cloneNode(true));
+                }
+            });
+
+            if (eventsList.innerHTML.trim() === '') {
+                const noEventsHtml = `
+                    <div class="col-md-12">
+                        <div class="alert alert-info" role="alert">
+                            No events found.
+                        </div>
+                    </div>
+                `;
+                eventsList.insertAdjacentHTML('beforeend', noEventsHtml);
+            }
+        });
+    });
+</script>
+{% endblock %}
+
 {% endblock %}

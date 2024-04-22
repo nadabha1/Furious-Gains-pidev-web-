@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity]
 class Commande
 {
@@ -14,7 +14,7 @@ class Commande
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(name: "id_client", referencedColumnName: "id_user")]
-    private  $id_client;
+    private ?User $id_client;
 
     #[ORM\Column(length:255)]
     #[Assert\NotBlank(message:"Il faut completer le champ statut commande")]
@@ -22,12 +22,11 @@ class Commande
 
     #[ORM\Column]
     #[Assert\Positive(message:"Le montant doit être positif")]
-    #[Assert\NotBlank(message:"Il faut completer le champ montant")]
     private ?float $montantTotal;
 
     #[ORM\ManyToOne(targetEntity: Produit::class)]
     #[ORM\JoinColumn(name: "id_produit", referencedColumnName: "id_produit")]
-    private ?Produit $id_produit;
+    private ?Produit $idProduit;
 
     public function getIdCommand(): ?int
     {
@@ -39,16 +38,15 @@ class Commande
         $this->id_command = $id_command;
     }
 
-    public function getId_client(): ?User
+    public function getIdClient(): ?User
     {
         return $this->id_client;
     }
 
-    public function setId_client(?User $id_client): void
+    public function setIdClient(?User $id_client): void
     {
         $this->id_client = $id_client;
     }
-
     public function getStatutCommande(): ?string
     {
         return $this->statutCommande;
@@ -71,12 +69,12 @@ class Commande
 
     public function getIdProduit(): ?Produit
     {
-        return $this->id_produit;
+        return $this->idProduit;
     }
 
     public function setIdProduit(?Produit $id_produit): void
     {
-        $this->id_produit = $id_produit;
+        $this->idProduit = $id_produit;
     }
 
 

@@ -12,7 +12,7 @@ class Categorie
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $idCategorie;
+    private ?int $id_categorie;
 
     #[ORM\Column(length:255)]
 
@@ -24,12 +24,12 @@ class Categorie
 
     public function getIdCategorie(): ?int
     {
-        return $this->idCategorie;
+        return $this->id_categorie;
     }
 
     public function setIdCategorie(?int $idCategorie): void
     {
-        $this->idCategorie = $idCategorie;
+        $this->id_categorie = $idCategorie;
     }
 
     public function getNomCategorie(): ?string

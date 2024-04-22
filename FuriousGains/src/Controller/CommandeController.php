@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Commande;
 use App\Form\CommandeType;
+use App\Repository\CommandeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,16 +47,16 @@ class CommandeController extends AbstractController
     }
 
     #[Route('/{idCommand}', name: 'app_commande_show', methods: ['GET'])]
-    public function show(Commande $commande): Response
-    {
+    public function show(CommandeRepository $repo,$idCommand): Response
+    { $commande =$repo->find($idCommand);
         return $this->render('commande/show.html.twig', [
             'commande' => $commande,
         ]);
     }
 
     #[Route('/{idCommand}/edit', name: 'app_commande_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
-    {
+    public function edit(Request $request,CommandeRepository $repo,$idCommand,  EntityManagerInterface $entityManager): Response
+    {  $commande =$repo->find($idCommand);
         $form = $this->createForm(CommandeType::class, $commande);
         $form->handleRequest($request);
 
@@ -72,8 +73,8 @@ class CommandeController extends AbstractController
     }
 
     #[Route('/{idCommand}', name: 'app_commande_delete', methods: ['POST'])]
-    public function delete(Request $request, Commande $commande, EntityManagerInterface $entityManager): Response
-    {
+    public function delete(Request $request,CommandeRepository $repo,$idCommand, EntityManagerInterface $entityManager): Response
+    { $commande =$repo->find($idCommand);
         if ($this->isCsrfTokenValid('delete'.$commande->getIdCommand(), $request->request->get('_token'))) {
             $entityManager->remove($commande);
             $entityManager->flush();

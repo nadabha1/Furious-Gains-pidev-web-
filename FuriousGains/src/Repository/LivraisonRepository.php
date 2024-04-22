@@ -50,13 +50,25 @@ class LivraisonRepository extends ServiceEntityRepository
     public function listLivraisonByEmail(): ?Livraison
     {
         return $this->createQueryBuilder('a')
-            ->orderBy('a.email','ASC')
+            ->orderBy('a.adresseLivraison', 'ASC')
             ->getQuery()
-            ->getResult()
-            ;
+            ->getResult();
     }
-    public function findOneByEmail(string $email)
+
+    public function findByKeywordQuery(string $keyword)
     {
-        return $this->findOneBy(['email' => $email]);
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.statutLivraison LIKE :keyword')
+            ->setParameter('keyword', '%'.$keyword.'%')
+            ->getQuery()
+            ->getResult();
+    }
+    public function findOneByadresse(string $keyword)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.adresseLivraison LIKE :keyword')
+            ->setParameter('keyword','%'.$keyword.'%')
+            ->getQuery()
+            ->getResult();
     }
 }

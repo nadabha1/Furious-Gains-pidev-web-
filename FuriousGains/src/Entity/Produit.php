@@ -31,17 +31,10 @@ class Produit
 
     private ?string$imageName;
 
-    /**
-     * @var \Categorie
-     *
-     * @ORM\ManyToOne(targetEntity="Categorie")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_categorie", referencedColumnName="id_categorie")
-     * })
-     */
-    #[ORM\ManyToOne(targetEntity: Categorie::class,inversedBy: 'Produits')]
 
-    private ?Categorie $idCategorie;
+    #[ORM\ManyToOne(targetEntity: Categorie::class)]
+    #[ORM\JoinColumn(name: "id_categorie", referencedColumnName: "id_categorie")]
+    private ?Categorie $id_categorie;
 
     public function getIdProduit(): ?int
     {
@@ -103,14 +96,14 @@ class Produit
         $this->imageName = $imageName;
     }
 
-    public function getIdCategorie(): ?Categorie
+    public function getId_categorie(): ?Categorie
     {
-        return $this->idCategorie;
+        return $this->id_categorie;
     }
 
     public function setIdCategorie(?Categorie $idCategorie): void
     {
-        $this->idCategorie = $idCategorie;
+        $this->id_categorie = $idCategorie;
     }
 
 

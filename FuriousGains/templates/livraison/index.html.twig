@@ -61,6 +61,26 @@
 {% endblock %}
 {% block features %}
     <h1>Livraison index</h1>
+    <h1 class="titre-rouge text-center">Recherche des livraisons par StatutLivraison</h1>
+
+                <form action="{{ path('search_livraison') }}" method="GET" class="form-petit text-center">
+                                        <div class="form-group">
+                                            <label for="recherchepar" class="sr-only">Recherche par</label>
+                                            <select id="recherchepar" name="recherche_par" class="form-control">
+                                                <option value="statutLivraison">statutLivraison</option>
+                                                <option value="adresse">adresseLivraison</option>
+                                                <!-- Ajoutez d'autres options de recherche ici -->
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cin1" class="sr-only">Valeur de recherche</label>
+                                            <input type="text" id="cin1" name="cin1" class="form-control" placeholder="Entrez la valeur de recherche">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Rechercher</button>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
+                </form>
 
     <table class="table">
         <thead>
@@ -86,6 +106,7 @@
                 <td>
                     <a href="{{ path('app_livraison_show', {'idLivraison': livraison.idLivraison}) }}">show</a>
                     <a href="{{ path('app_livraison_edit', {'idLivraison': livraison.idLivraison}) }}">edit</a>
+                   <a href="{{ path('telecharger_pdf', {'idLivraison': livraison.idLivraison}) }}" class="btn btn-primary">Télécharger PDF</a>
                 </td>
             </tr>
         {% else %}

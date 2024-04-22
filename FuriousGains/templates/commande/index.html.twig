@@ -1,8 +1,8 @@
-{% extends 'base.html.twig' %}
+{% extends 'contact.html.twig' %}
 
 {% block title %}Commande index{% endblock %}
 
-{% block body %}
+{% block container %}
     <h1>Commande index</h1>
 
     <table class="table">
@@ -21,8 +21,8 @@
                 <td>{{ commande.statutCommande }}</td>
                 <td>{{ commande.montantTotal }}</td>
                 <td>
-                    <a href="{{ path('app_commande_show', {'idCommand': commande.idCommand}) }}">show</a>
-                    <a href="{{ path('app_commande_edit', {'idCommand': commande.idCommand}) }}">edit</a>
+                    <a href="{{ path('app_commande_show', {'idCommand': commande.getIdCommand()}) }}">show</a>
+                    <a href="{{ path('app_commande_edit', {'idCommand': commande.getIdCommand()}) }}">edit</a>
                 </td>
             </tr>
         {% else %}

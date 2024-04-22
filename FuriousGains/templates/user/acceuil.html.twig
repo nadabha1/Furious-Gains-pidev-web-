@@ -126,6 +126,11 @@
                                             <i class="input-icon uil uil-lock-alt"></i>
                                         </div>
                                         <div class="form-group mt-2">
+                                            <div class="form-floating">
+                                                {{ form_row(formUser.roles) }}
+                                            </div>
+                                        </div>
+                                        <div class="form-group mt-2">
                                             {{ form_widget( formUser.image) }}
                                             {{ form_errors( formUser.image) }}
                                             <i class="input-icon uil uil-calendar-alt"></i>

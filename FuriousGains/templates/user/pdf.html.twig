@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les informations </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+            position: relative;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        p {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .user-info {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .user-info p:first-child {
+            font-weight: bold;
+            margin-top: 0;
+        }
+
+        .thank-you {
+            text-align: center;
+            font-style: italic;
+            color: #888;
+        }
+
+        .highlight {
+            color: red;
+            font-weight: bold;
+        }
+
+        .date-telechargement {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+<p class="date-telechargement">Date de téléchargement : {{ date_telechargement|date('d/m/Y H:i:s') }}</p>
+<br>
+<br>
+<br>
+<div class="user-info">
+    <h1>Coordonnée du {{ user.nom }}</h1>
+    <h5><span  class="highlight">cin  :</span>{{ user.cin }}</h5>
+    <p><span class="highlight">Nom :</span> {{ user.nom }} </p>
+    <p><span class="highlight">Prenom :</span> {{ user.prenom }}</p>
+    <p><span class="highlight">date :</span> {{ user.dateuser|date('d/m/Y') }}</p>
+    <p><span class="highlight">adresse :</span> {{ user.adresse }}</p>
+    {% if user.ban==0 %}
+    <p><span class="highlight">Statut du compte :</span> Active </p>
+    {%  else %}
+    <p><span class="highlight">Statut du compte :</span> Ban </p>
+    {% endif %}
+
+    {% if user.roles== ["ROLE_USER"] %}
+    <p><span class="highlight">Role :</span> User </p>
+    {%  else %}
+        <p><span class="highlight"> Role :</span> Admin </p>
+    {% endif %}
+
+</div>
+<p class="thank-you">Merci !</p>
+</body>
+</html>

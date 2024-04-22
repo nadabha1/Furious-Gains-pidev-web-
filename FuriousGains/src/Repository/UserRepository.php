@@ -56,4 +56,12 @@ class UserRepository extends ServiceEntityRepository
     {
         return $this->findOneBy(['email' => $email]);
     }
+    public function searchNom($Email)
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.nom LIKE :ncl')
+            ->setParameter('ncl', $Email.'%')
+            ->getQuery()
+            ->execute();
+    }
 }

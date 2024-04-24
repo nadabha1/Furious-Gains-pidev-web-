@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Reservation;
+use App\Entity\Evenement;
+
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -45,4 +47,13 @@ class ReservationRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+public function countReservedPlacesForEvent(Evenement $event): int
+{
+    return $this->createQueryBuilder('r')
+        ->select('SUM(r.nb_place) as totalReservedPlaces')
+        ->andWhere('r.evenement = :event')
+        ->setParameter('event', $event)
+        ->getQuery()
+        ->getSingleScalarResult() ?? 0;
+}
 }

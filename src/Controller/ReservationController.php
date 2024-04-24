@@ -47,11 +47,20 @@ class ReservationController extends AbstractController
             throw $this->createNotFoundException('Evenement not found.');
         }
     
+        // Calculate the number of places already reserved for the event
+        $reservedPlaces = $entityManager->getRepository(Reservation::class)->countReservedPlacesForEvent($evenement);
+
+        // Calculate the maximum number of participants based on available places
+        $maxParticipants = $evenement->getNbParticipation() - $reservedPlaces;
+
         $reservation = new Reservation();
         $reservation->setIdClient($user); // Set idClient with the User object
         $reservation->setEvenement($evenement); // Set the Evenement object
         $reservation->setStatusRes('Pending');
-        $form = $this->createForm(ReservationType::class, $reservation);
+
+        $form = $this->createForm(ReservationType::class, $reservation, [
+            'max_participants' => $maxParticipants, // Pass the max_participants option to the form
+        ]);
     
         $form->handleRequest($request);
     
@@ -69,6 +78,8 @@ class ReservationController extends AbstractController
             'Event_id' => $Event_id,
         ]);
     }
+
+
     
     #[Route('/delete/{id}', name: 'app_reservation_delete', methods: ['POST'])]
 public function delete(Request $request, Reservation $reservation, int $user_id): Response

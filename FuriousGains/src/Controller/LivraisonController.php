@@ -36,9 +36,10 @@ class LivraisonController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($livraison);
+            $this->addFlash('success', 'Livraison ajouté avec succès.');
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_livraison_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_livraison_new', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('livraison/new.html.twig', [

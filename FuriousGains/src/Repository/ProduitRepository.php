@@ -39,6 +39,33 @@ class ProduitRepository extends ServiceEntityRepository
 //    }
 
 //  
+
+
+
+ /**
+     * Recherche les produits correspondant à un mot-clé dans la marque, le prix ou la description.
+     *
+     * @param string $keyword Le mot-clé à rechercher
+     * @return Produit[] La liste des produits correspondant
+     */
+    public function findByKeyword(string $keyword): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.marque_produit LIKE :keyword')
+            ->orWhere('p.prix_produit LIKE :keyword')
+            ->orWhere('p.description LIKE :keyword')
+            ->setParameter('keyword', '%'.$keyword.'%')
+            ->getQuery()
+            ->getResult();
+    }
+    public function findByKeywordQuery(string $keyword)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.nom LIKE :keyword')
+            ->setParameter('keyword', '%'.$keyword.'%')
+            ->getQuery()
+            ->getResult();
+    }
 public function add(Produit $entity, bool $flush = false): void
 {
     $this->getEntityManager()->persist($entity);

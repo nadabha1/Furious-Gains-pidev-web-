@@ -37,6 +37,23 @@ class CategorieRepository extends ServiceEntityRepository
 //    }
 
 //  
+
+/**
+     * Recherche les categories correspondant à un mot-clé dans la marque, le prix ou la description.
+     *
+     * @param string $keyword Le mot-clé à rechercher
+     * @return Categorie[] La liste des categories correspondant
+     */
+    public function findByKeyword(string $keyword): array
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.nom_categorie LIKE :keyword')
+            ->orWhere('p.descriptionC LIKE :keyword')
+            ->setParameter('keyword', '%'.$keyword.'%')
+            ->getQuery()
+            ->getResult();
+    }
+
 public function add(Categorie $entity, bool $flush = false): void
 {
     $this->getEntityManager()->persist($entity);

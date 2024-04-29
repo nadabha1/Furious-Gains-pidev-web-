@@ -79,3 +79,19 @@
     padding: 20px;
     display: none; /* Masquez la barre de panier par défaut */
 }
+.form-control-sm {
+    height: calc(1.5em + 0.5rem + 2px); /* Ajustez la hauteur selon vos préférences */
+    padding: 0.25rem 0.5rem; /* Ajustez les rembourrages selon vos préférences */
+    font-size: 0.875rem; /* Ajustez la taille de la police selon vos préférences */
+    line-height: 1; /* Ajustez la hauteur de ligne selon vos préférences */
+}
+.small-input {
+    width: 60px; /* Définissez la largeur souhaitée */
+}
+.flash-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+}

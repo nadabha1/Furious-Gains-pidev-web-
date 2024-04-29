@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Endroid\QrCode\QrCode;
 
 #[Route('/annonces')]
 class AnnoncesController extends AbstractController
@@ -81,4 +82,5 @@ class AnnoncesController extends AbstractController
 
         return $this->redirectToRoute('app_annonces_index', [], Response::HTTP_SEE_OTHER);
     }
+
 }

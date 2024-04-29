@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+
 use App\Entity\Regime;
 use App\Form\RegimeType;
 use App\Repository\RegimeRepository;
@@ -11,10 +12,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+
+
+
+
 #[Route('/regime')]
 class RegimeController extends AbstractController
 {
-    #[Route('/', name: 'app_regime_index', methods: ['GET'])]
+    #[Route('/read', name: 'app_regime_index', methods: ['GET'])]
     public function index(RegimeRepository $regimeRepository): Response
     {
         return $this->render('regime/index.html.twig', [

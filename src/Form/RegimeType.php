@@ -24,4 +24,5 @@ class RegimeType extends AbstractType
             'data_class' => Regime::class,
         ]);
     }
+    
 }

@@ -4,6 +4,8 @@
 namespace App\Entity;
 
 use App\Repository\RecetteRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RecetteRepository::class)]
@@ -26,6 +28,17 @@ class Recette
     #[ORM\ManyToOne(targetEntity: Regime::class)]
     #[ORM\JoinColumn(name: 'id_regime', referencedColumnName: 'id')]
     private ?Regime $regime = null;
+
+    /**
+     * @var Collection<int, Rating>
+     */
+    #[ORM\OneToMany(targetEntity: Rating::class, mappedBy: 'recetteId', orphanRemoval: true)]
+    private Collection $ratings;
+
+    public function __construct()
+    {
+        $this->ratings = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -79,4 +92,35 @@ class Recette
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Rating>
+     */
+    public function getRatings(): Collection
+    {
+        return $this->ratings;
+    }
+
+    public function addRating(Rating $rating): static
+    {
+        if (!$this->ratings->contains($rating)) {
+            $this->ratings->add($rating);
+            $rating->setRecetteId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRating(Rating $rating): static
+    {
+        if ($this->ratings->removeElement($rating)) {
+            // set the owning side to null (unless already changed)
+            if ($rating->getRecetteId() === $this) {
+                $rating->setRecetteId(null);
+            }
+        }
+
+        return $this;
+    }
+    
 }

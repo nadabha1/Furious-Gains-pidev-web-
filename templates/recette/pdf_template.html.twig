@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>List of Recipes</title>
+    <style>
+        /* Define your CSS styles for the PDF here */
+    </style>
+</head>
+<body>
+    <h1>List of Recipes</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Ingredients</th>
+                <th>Preparation Time</th>
+                <!-- Add more headers as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for recette in recettes %}
+                <tr>
+                    <td>{{ recette.id }}</td>
+                    <td>{{ recette.nomRecette }}</td>
+                    <td>{{ recette.ingredients }}</td>
+                    <td>{{ recette.tempsPreparation }}</td>
+                    <!-- Add more data as needed -->
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

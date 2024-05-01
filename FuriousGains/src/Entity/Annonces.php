@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity]
 class Annonces
 {
@@ -13,16 +13,31 @@ class Annonces
     private ?int $idAnnonces;
 
     #[ORM\Column(name: "titre_annonces", type: "string", length: 255, nullable: false)]
+    #[Assert\NotBlank(message:" must be not emty")]
     private ?string $titreAnnonces;
 
     #[ORM\Column(name: "description_annonces", type: "string", length: 255, nullable: false)]
+    #[Assert\NotBlank(message:" must be not emty")]
     private ?string $descriptionAnnonces;
 
     #[ORM\Column(name: "imag", type: "string", length: 255, nullable: false)]
+    #[Assert\NotBlank(message:" must be not emty")]
     private ?string $imag;
 
-    #[ORM\ManyToOne(targetEntity: "User")]
-    private ?User $idUser;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: "id_user", referencedColumnName: "id_user")]
+    private ?User $user;
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): void
+    {
+        $this->user = $user;
+    }
+
 
     public function getIdAnnonces(): ?int
     {

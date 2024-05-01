@@ -41,7 +41,6 @@
 
                         {{ form_start(registrationForm,{'attr': {'novalidate': 'novalidate',
                             'class' : 'user'
-
                         } }) }}
 
                         {% for flash_error in app.flashes('verify_email_error') %}
@@ -54,7 +53,6 @@
                                 {{ form_row(registrationForm.nom,{ 'attr' : {
                                     'class' : 'form-control form-control-user',
                                     'placeholder' : 'First Name'
-
                                 }}) }}
                             </div>
                             <div class="col-sm-6">

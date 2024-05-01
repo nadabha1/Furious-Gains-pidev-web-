@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Controller;
-use App\Form\RechercheType;
-use App\Form\UserType2;
+use App\Services\EmailSender;
+use League\Csv\CannotInsertRecord;
+use League\Csv\Exception;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\Service\UploderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -10,12 +12,14 @@ use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Dompdf\Dompdf;
+use League\Csv\Writer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -52,9 +56,11 @@ class UserController extends AbstractController
     #[Route('/{iduser}/edit', name: 'editt', methods: ['GET', 'POST'])]
     public function edit(Request $request,UserRepository $repo,$iduser, EntityManagerInterface $entityManager): Response
     { $user = $repo->findOneBy(['id_user' => $iduser]);
-        $form = $this->createForm(UserType2::class, $user);
+        $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
-
+        $form->remove('token');
+        $form->remove('image');
+        $form->remove('password');
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
@@ -73,28 +79,27 @@ class UserController extends AbstractController
     #[Route('/readUser/{iduser}', name: 'readUser', methods: ['GET', 'POST'])]
     public function readUser(UserRepository $repo,EntityManagerInterface $manager, Request $request, $iduser): Response
     {
-        $user = $repo->findOneBy(['id_user' => $iduser]);
-        if (!$user) {
-            throw $this->createNotFoundException('User not found'); // Handle the case when user is not found
-        }
-        $form=$this->createForm(UserType2::class,$user);
-        $form->handleRequest($request);
-        //5
-        if ($form->isSubmitted() && $form->isValid()) {
-            $manager->flush();
-           // return $this->redirectToRoute('readUser', ['iduser' => $iduser]);
-            return $this->renderForm('user/AfficherUser.html.twig', [
-                'form' => $form->createView(),
-                'User' => $user,
-                'iduser' => $iduser
-            ]);
-
-        }
+        $user=$this->userRepository->find($iduser);
+            $form=$this->createForm(UserType::class,$user);
+            $form->remove('token');
+            $form->remove('image');
+            $form->remove('password');
+            $form->handleRequest($request);
+            if($form->isSubmitted()&& $form->isValid()){
+                $em=$this->managerRegistry->getManager();
+                $em->persist($user);
+                $em->flush();
+                return $this->renderForm('user/AfficherUser.html.twig', [
+                    'form' => $form->createView(),
+                    'User' => $user,
+                    'iduser' => $iduser
+                ]);            }
         return $this->render('user/AfficherUser.html.twig', [
             'form' => $form->createView(),
             'User' => $user,
             ['iduser' => $iduser]
         ]);
+
     }
     #[Route('/homee', name: 'homee')]
     public function homeee(ManagerRegistry $manager,Request $request): Response
@@ -241,6 +246,8 @@ class UserController extends AbstractController
             }
             $em->persist($user);
             $em->flush();
+            $email=new EmailSender();
+            $email->sendEmail("nadabha2@gmail.com","sujet lena","text lena");
             $this->addFlash('success',"user ajouté avec succe");
             return $this->redirectToRoute("app_user.Afficher");
         }
@@ -249,24 +256,38 @@ class UserController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+    #[Route('/rechercheAdmin', name: 'app_user.rechercher'),IsGranted('ROLE_ADMIN')]
+    public function AfficherUserParCin(Request $request,UserRepository $userRepository): Response
+    {
+        $cin = $request->query->get('cin1');
+        if ($cin) {
+            $recherche_par = $request->query->get('recherche_par');
+            switch ($recherche_par) {
+                case 'cin':
+                    $user = $userRepository->findBy(['cin' => $cin]);
+                    break;
+                case 'nom':
+                    $user = $userRepository->findBy(['nom' => $cin]);
+                    break;
+                case 'adresse':
+                    $user = $userRepository->findBy(['adresse' => $cin]);
+                    break;
+                default:
+                    $user = [];
+            }
+        } else {
+            $user = [];
+        }
+        return $this->render('Admin/Admin.html.twig', [
+            'Users' => $user,
+        ]);
+    }
     #[Route('/afficherAdmin', name: 'app_user.Afficher'),IsGranted('ROLE_ADMIN')]
     public function AfficherUser(Request $request,UserRepository $userRepository): Response
     { $i=$userRepository->findAll();
-        $client= $userRepository->findAll();
-        //search
-        $searchForm = $this->createForm(RechercheType::class);
-        $searchForm->add("Recherche",SubmitType::class);
-        $searchForm->handleRequest($request);
-        if ($searchForm->isSubmitted()) {
-            $Email = $searchForm['Email']->getData();
-            $resulta = $userRepository->searchNom($Email);
-            return $this->render('Admin/Admin.html.twig', array(
-                "Users" => $resulta,
-                "searchUser" => $searchForm->createView()));
-        }
+
         return $this->render('Admin/Admin.html.twig', array(
-            "Users" => $client,
-            "searchUser" => $searchForm->createView()));
+            "Users" => $i));
 
     }
     #[Route('/telecharger_pdf/{id_user}', name: 'telecharger_pdf')]
@@ -348,5 +369,42 @@ class UserController extends AbstractController
             'form'=>$form->createView()
 
         ]);}
+
+    /**
+     * @throws CannotInsertRecord
+     * @throws Exception
+     */
+    #[Route('/exportcsv', name: 'exportUsers'),IsGranted('ROLE_ADMIN')]
+    public function exportUsers(UserRepository $userRepository)
+    { $users = $userRepository->findAll();
+
+        $csvWriter = Writer::createFromFileObject(new \SplTempFileObject());
+
+        // Spécifiez les attributs que vous souhaitez exporter
+        $attributesToExport = ['cin', 'nom', 'email'];
+
+        $csvWriter->insertOne($attributesToExport);
+
+        foreach ($users as $user) {
+            $data = [];
+
+            foreach ($attributesToExport as $attribute) {
+                $getterMethod = 'get' . ucfirst($attribute);
+                $data[] = $user->$getterMethod();
+            }
+
+            $csvWriter->insertOne($data);
+        }
+
+        $response = new Response($csvWriter->getContent());
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'users.csv'
+        );
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', $disposition);
+
+        return $response;
+    }
 
 }

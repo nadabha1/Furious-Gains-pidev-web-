@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Entity;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\DBAL\Types\Types;
@@ -10,6 +11,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Table(name:"User")]
 #[ORM\Entity]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 
 
 class User implements UserInterface,  PasswordAuthenticatedUserInterface
@@ -71,10 +73,11 @@ class User implements UserInterface,  PasswordAuthenticatedUserInterface
     #[ORM\Column]
 
     private ?int $id_Code_Promo;
-  /*  #[ORM\ManyToOne(targetEntity: Codepromo::class,inversedBy: 'Users')]
-    private ?Codepromo $codepromo = null;*/
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
+
+    #[ORM\Column(type: 'boolean')]
+    private $isVerified = false;
 
     public function getToken(): ?string
     {
@@ -266,5 +269,17 @@ class User implements UserInterface,  PasswordAuthenticatedUserInterface
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+
+        return $this;
     }
 }

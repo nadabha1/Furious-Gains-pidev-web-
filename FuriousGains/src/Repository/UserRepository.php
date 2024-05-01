@@ -27,12 +27,32 @@ class UserRepository extends ServiceEntityRepository
     public function findBycin($value): array
    {
        return $this->createQueryBuilder('a')
-           ->andWhere('cin = :val')
+           ->andWhere('cin LIKE :val')
            ->setParameter('val', $value)
             ->setMaxResults(1)
             ->getQuery()
            ->getResult()
         ;
+    }
+    public function findBynom($value): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('nom LIKE :val')
+            ->setParameter('val', $value)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+    public function findByadresee($value): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('adresse LIKE :val')
+            ->setParameter('val', $value)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+            ;
     }
 
 //    public function findOneBySomeField($value): ?User

@@ -3,26 +3,39 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 
 class Avis
 {
-    #[ORM\Id]
     #[ORM\Column(name: "id_avis", type: "integer", nullable: false)]
+    #[ORM\Id]
     #[ORM\GeneratedValue(strategy: "IDENTITY")]
     private ?int $idAvis;
 
     #[ORM\Column(name: "note", type: "integer", nullable: false)]
+    #[Assert\Positive(message: "la note doit etre positive")]
     private ?int $note;
 
-#[ORM\ManyToOne(targetEntity: "Produit")]
+    #[ORM\ManyToOne(targetEntity: Produit::class)]
+    #[ORM\JoinColumn(name: "id_produit", referencedColumnName: "id_produit")]
+    #[Assert\NotBlank(message:" veuillez séléctionner un élément dans la liste")]
 
-    private ?Produit $idProduit;
+    private ?Produit $produit;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: "id_user", referencedColumnName: "id_user")]
+    private ?User $user;
 
-#[ORM\ManyToOne(targetEntity: "User")]
+    public function getProduit(): ?Produit
+    {
+        return $this->produit;
+    }
 
-    private ?User $id_user;
+    public function setProduit(?Produit $produit): void
+    {
+        $this->produit = $produit;
+    }
 
     public function getIdAvis(): ?int
     {
@@ -44,25 +57,16 @@ class Avis
         $this->note = $note;
     }
 
-    public function getIdProduit(): ?Produit
+    public function getUser(): ?User
     {
-        return $this->idProduit;
+        return $this->user;
     }
 
-    public function setIdProduit(?Produit $idProduit): void
+    public function setUser(?User $user): void
     {
-        $this->idProduit = $idProduit;
+        $this->user = $user;
     }
 
-    public function getIdUser(): ?User
-    {
-        return $this->idUser;
-    }
-
-    public function setIdUser(?User $idUser): void
-    {
-        $this->idUser = $idUser;
-    }
 
 
 }

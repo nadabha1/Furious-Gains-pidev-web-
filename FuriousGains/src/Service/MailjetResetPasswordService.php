@@ -18,7 +18,7 @@ class MailjetResetPasswordService
                 [
                     'From' => [
                         'Email' => "benslimen.louay@esprit.tn",
-                        'Name' => "no-replyMagic mind"
+                        'Name' => "FuriousGains"
                     ],
                     'To' => [
                         [
@@ -30,7 +30,6 @@ class MailjetResetPasswordService
                     'TemplateLanguage' => true,
                     'Subject' => $subject,
                     'Variables' => [
-
                         "content" => "<h1>Hi!</h1>
 
 <p>To reset your password, please visit the following link</p>
@@ -39,7 +38,7 @@ class MailjetResetPasswordService
 
 <p>This link will expire in .</p>
 
-<p>Cheers!</p>",
+<p>GoodBye!</p>",
 
 
                     ]

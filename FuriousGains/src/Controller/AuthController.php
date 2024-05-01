@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\DisabledException;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
@@ -25,9 +26,7 @@ class AuthController extends AbstractController
 {
     public function __construct(private ManagerRegistry $managerRegistry,
                                 private UserRepository $userRepository,
-                                private UploderService  $uploderService
-
-    )
+                                private UploderService  $uploderService)
     {
 
     }
@@ -41,8 +40,12 @@ class AuthController extends AbstractController
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
     #[Route(path: '/login_check', name: 'login_check')]
-    public function loginCheck(Request $request)
-    {
+    public function loginCheck(Request $request,AuthenticationUtils $authenticationUtils,UserRepository $userRepository )
+    {            $lastUsername = $authenticationUtils->getLastUsername();
+        $user=$userRepository->findOneByEmail($lastUsername);
+        if ($user instanceof User && $user->isBan()) {
+            throw new DisabledException('Votre compte est bloqué. Veuillez contacter l\'administrateur.');
+        }else{
         // Redirect user to a specific space based on some condition
         if ( $this->isGranted("ROLE_ADMIN")) {
             return $this->redirectToRoute('app_user.Afficher');
@@ -50,7 +53,7 @@ class AuthController extends AbstractController
         } else if($this->isGranted("ROLE_USER")) {
             // Handle other cases or provide a default redirect
             return $this->redirectToRoute('homee');
-        }
+        }}
 
     }
     #[Route(path: '/logout', name: 'app_logout')]

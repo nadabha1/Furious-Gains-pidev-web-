@@ -24,17 +24,36 @@ class UserRepository extends ServiceEntityRepository
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('a')
-//            ->andWhere('a.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('a.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findBycin($value): array
+   {
+       return $this->createQueryBuilder('a')
+           ->andWhere('cin LIKE :val')
+           ->setParameter('val', $value)
+            ->setMaxResults(1)
+            ->getQuery()
+           ->getResult()
+        ;
+    }
+    public function findBynom($value): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('nom LIKE :val')
+            ->setParameter('val', $value)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+    public function findByadresee($value): array
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('adresse LIKE :val')
+            ->setParameter('val', $value)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 
 //    public function findOneBySomeField($value): ?User
 //    {
@@ -56,5 +75,13 @@ class UserRepository extends ServiceEntityRepository
     public function findOneByEmail(string $email)
     {
         return $this->findOneBy(['email' => $email]);
+    }
+    public function searchNom($Email)
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.nom LIKE :ncl')
+            ->setParameter('ncl', $Email.'%')
+            ->getQuery()
+            ->execute();
     }
 }

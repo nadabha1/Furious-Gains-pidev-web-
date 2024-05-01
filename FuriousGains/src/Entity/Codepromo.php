@@ -1,5 +1,5 @@
 <?php
-
+/*
 namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -97,6 +97,111 @@ class Codepromo
     {
         $this->utilisationsRestantes = $utilisationsRestantes;
     }
+*/
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity
+ */
+class Codepromo
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private ?int $idCodePromo;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private ?int $code;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private ?int $montantReduction;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private ?string $statut;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private ?int $utilisationsRestantes;
+
+    /**
+     * @ORM\OneToMany(mappedBy="codepromo", targetEntity=User::class)
+     */
+    private Collection $codes;
+
+    public function __construct()
+    {
+        $this->codes = new ArrayCollection();
+    }
+
+    public function getIdCodePromo(): ?int
+    {
+        return $this->idCodePromo;
+    }
+
+    public function setIdCodePromo(?int $idCodePromo): void
+    {
+        $this->idCodePromo = $idCodePromo;
+    }
+
+    public function getCode(): ?int
+    {
+        return $this->code;
+    }
+
+    public function setCode(?int $code): void
+    {
+        $this->code = $code;
+    }
+
+    public function getMontantReduction(): ?int
+    {
+        return $this->montantReduction;
+    }
+
+    public function setMontantReduction(?int $montantReduction): void
+    {
+        $this->montantReduction = $montantReduction;
+    }
+
+    public function getStatut(): ?string
+    {
+        return $this->statut;
+    }
+
+    public function setStatut(?string $statut): void
+    {
+        $this->statut = $statut;
+    }
+
+    public function getUtilisationsRestantes(): ?int
+    {
+        return $this->utilisationsRestantes;
+    }
+
+    public function setUtilisationsRestantes(?int $utilisationsRestantes): void
+    {
+        $this->utilisationsRestantes = $utilisationsRestantes;
+    }
+
+    public function getCodes(): Collection
+    {
+        return $this->codes;
+    }
+
+    public function setCodes(Collection $codes): void
+    {
+        $this->codes = $codes;
+    }
 }

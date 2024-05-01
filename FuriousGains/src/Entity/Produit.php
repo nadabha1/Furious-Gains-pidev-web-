@@ -10,57 +10,46 @@ class Produit
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $idProduit;
+    private ?int $id_produit;
 
-    #[ORM\Column(length:255)]
+    #[ORM\Column(length: 255)]
+    private ?string $marque_produit;
 
-    private ?string$marqueProduit;
     #[ORM\Column]
-
     private ?int $quantite;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'float')]
+    private ?float $prix_produit;
 
-    private ?float $prixProduit;
-
-    #[ORM\Column(length:255)]
-
+    #[ORM\Column(length: 255)]
     private ?string $description;
 
-    #[ORM\Column(length:255)]
+    #[ORM\Column(length: 255)]
+    private ?string $image_name;
 
-    private ?string$imageName;
+    #[ORM\ManyToOne(targetEntity: Categorie::class)]
+    #[ORM\JoinColumn(name: "id_categorie", referencedColumnName: "id_categorie")]
+    private ?Categorie $id_categorie;
 
-    /**
-     * @var \Categorie
-     *
-     * @ORM\ManyToOne(targetEntity="Categorie")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="id_categorie", referencedColumnName="id_categorie")
-     * })
-     */
-    #[ORM\ManyToOne(targetEntity: Categorie::class,inversedBy: 'Produits')]
-
-    private ?Categorie $idCategorie;
 
     public function getIdProduit(): ?int
     {
-        return $this->idProduit;
+        return $this->id_produit;
     }
 
-    public function setIdProduit(?int $idProduit): void
+    public function setIdProduit(?int $id_produit): void
     {
-        $this->idProduit = $idProduit;
+        $this->id_produit = $id_produit;
     }
 
     public function getMarqueProduit(): ?string
     {
-        return $this->marqueProduit;
+        return $this->marque_produit;
     }
 
-    public function setMarqueProduit(?string $marqueProduit): void
+    public function setMarqueProduit(?string $marque_produit): void
     {
-        $this->marqueProduit = $marqueProduit;
+        $this->marque_produit = $marque_produit;
     }
 
     public function getQuantite(): ?int
@@ -75,12 +64,12 @@ class Produit
 
     public function getPrixProduit(): ?float
     {
-        return $this->prixProduit;
+        return $this->prix_produit;
     }
 
-    public function setPrixProduit(?float $prixProduit): void
+    public function setPrixProduit(?float $prix_produit): void
     {
-        $this->prixProduit = $prixProduit;
+        $this->prix_produit = $prix_produit;
     }
 
     public function getDescription(): ?string
@@ -95,23 +84,21 @@ class Produit
 
     public function getImageName(): ?string
     {
-        return $this->imageName;
+        return $this->image_name;
     }
 
-    public function setImageName(?string $imageName): void
+    public function setImageName(?string $image_name): void
     {
-        $this->imageName = $imageName;
+        $this->image_name = $image_name;
     }
 
     public function getIdCategorie(): ?Categorie
     {
-        return $this->idCategorie;
+        return $this->id_categorie;
     }
 
-    public function setIdCategorie(?Categorie $idCategorie): void
+    public function setIdCategorie(?Categorie $id_categorie): void
     {
-        $this->idCategorie = $idCategorie;
+        $this->id_categorie = $id_categorie;
     }
-
-
 }

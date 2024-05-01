@@ -20,12 +20,14 @@ class Reservation
 
     private ?string $statusRes;
 
-
     #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: "id_user", referencedColumnName: "id_user")]
+
 
     private ?User $idClient;
-
     #[ORM\ManyToOne(targetEntity: Evenement::class)]
+    #[ORM\JoinColumn(name: "id_event", referencedColumnName: "id_event")]
+
 
     private ?Evenement $idEvent;
 

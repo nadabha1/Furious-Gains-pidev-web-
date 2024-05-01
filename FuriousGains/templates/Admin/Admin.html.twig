@@ -1,0 +1,129 @@
+{% extends '/Dashboard.html.twig' %}
+    {% block container %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card mb-4">
+                <h2 class="text-center mb-4">User Management</h2>
+                <div class="form-inline mb-3">
+                    <a class="btn btn-primary  text-white btn-small mr-auto" href="{{ path('app_user.Ajout') }}">Add User</a>
+                    <a class="btn btn-primary  text-white btn-small ml-auto" href="{{ path('exportUsers') }}">Export data csv</a>
+                </div>
+                <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        var containers = document.querySelectorAll('.qrcode-container');
+                        containers.forEach(function(container) {
+                            var reference = container.dataset.reference;
+                            var qrcode = new QRCode(container, {
+                                text: reference,
+                                width: 100,
+                                height: 100
+                            });
+                        });
+                    });
+                </script>
+                <div class="card-header pb-0">
+                    <h1 class="titre-rouge text-center">Recherche des utilisateurs par CIN</h1>
+                    <form action="{{ path('app_user.rechercher') }}" method="GET" class="form-petit text-center">
+                        <div class="form-group">
+                            <label for="recherchepar" class="sr-only">Recherche par</label>
+                            <select id="recherchepar" name="recherche_par" class="form-control">
+                                <option value="cin">CIN</option>
+                                <option value="nom">Nom</option>
+                                <option value="adresse">Adresse</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cin1" class="sr-only">Valeur de recherche</label>
+                            <input type="text" id="cin1" name="cin1" class="form-control" placeholder="Entrez la valeur de recherche">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Rechercher</button>
+                        <a href="{{ path('app_user.Afficher')}}" class="btn btn-primary">
+                            <i class="fas fa-sync-alt"></i>
+                            </a>
+                    </form>
+
+                    <h6>Users table</h6>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                            <tr>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Users</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Cin </th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Function</th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Numero </th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Date d'anniversaire</th>
+                                <th class="text-secondary opacity-7"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for objet in Users %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex px-2 py-1">
+                                        <div>
+                                            <img src="/img/{{ objet.image}}" class="avatar avatar-sm me-3" alt="user1">
+                                        </div>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="mb-0 text-sm">{{ objet.nom}}</h6>
+                                            <p class="text-xs text-secondary mb-0">{{ objet.email}}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <p class="text-xs font-weight-bold mb-0">{{ objet.Cin}}</p>
+                                </td>
+                                <td>
+                                {% if objet.roles == ["ROLE_USER"] %}
+                                    <p class="text-xs font-weight-bold mb-0">User</p>
+                                    {% else %}
+                                    <p class="text-xs font-weight-bold mb-0">Admin</p>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <p class="text-xs font-weight-bold mb-0">{{ objet.Cin}}</p>
+                                </td>
+                                <td class="align-middle text-center text-sm">
+                                    {% if objet.ban == 0 %}
+                                        <span class="badge badge-sm bg-gradient-success">active</span>
+                                    {% else %}
+                                        <span class="badge badge-sm bg-gradient-danger">Ban</span>
+                                    {% endif %}                                </td>
+                                <td class="align-middle text-center">
+                                    <span class="text-secondary text-xs font-weight-bold">{{ objet.dateuser|date('Y-m-d') }}</span>
+                                </td>
+                                <td class="align-middle">
+
+                                    <a href="{{ path('app_user.Supprimer', {'id': objet.id_user}) }}" class="btn btn-danger btn-sm">Supprimer</a>
+                                    <a href="{{ path('app_user.Modifier', {'id': objet.id_user}) }}" class="btn btn-primary btn-sm">Modifier</a>
+                                    <a href="{{ path('telecharger_pdf', {'id_user': objet.id_user}) }}" class="btn btn-primary">Télécharger PDF</a>
+                                    <li class="breadcrumb-item"><a href="{{ path('indexq') }}" class="btn btn-primary">Generate qr for any event</a></li>
+                                </td>
+                                <td>
+                                <div class="qrcode-container" data-reference="Information sur compte:
+nom: {{ objet.nom }}
+prenom {{ objet.prenom }}
+cin:{{ objet.cin }}
+date:{{ objet.dateuser|date('Y-m-d') }}
+"></div>
+                                </td>
+                            </tr>
+
+
+                            </tbody>
+                            {% else %}
+
+                                tableau not found!!!!!!
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}

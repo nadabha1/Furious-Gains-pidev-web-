@@ -1,0 +1,148 @@
+{% extends 'contact.html.twig' %}
+
+{% block title %}Edit user{% endblock %}
+{% block container %}
+{% endblock %}
+{% block features %}
+    <h1>Edit user</h1>
+
+
+    <a href="{{ path('app_livraison_index') }}">back to list</a>
+    <div class="row">
+        <div class="col-md-882">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="title">Edit Profile</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <form action="{{ path('readUser', {'iduser': User.id_user}) }}">
+                        {{ form_start(form) }}
+
+                        <div class="row">
+                            <div class="col-md-5 pr-md-1">
+                                <div class="form-group">
+                                    <label>Cin</label>
+                                    {{ form_widget(form.cin) }}
+                                </div>
+                            </div>
+                            <div class="col-md-4 pr-md-1">
+                                <div class="form-group">
+                                    <label>numero tel</label>
+                                    {{ form_widget(form.numTel) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 pr-md-1">
+                                <div class="form-group">
+                                    <label>First Name</label>
+                                    {{ form_widget(form.nom) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6 pl-md-1">
+                                <div class="form-group">
+                                    <label>Last Name</label>
+                                    {{ form_widget(form.prenom) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Address</label>
+                                    {{ form_widget(form.email) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1"> address</label>
+                                    {{ form_widget(form.adresse) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label > date de naissance</label>
+                                    {{ form_widget(form.dateuser) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label > image</label>
+                                    <div>
+                                        <img src="/img/{{User.image}}" class="avatar avatar-sm me-3" alt="user1">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ path('editt', {'iduser': User.id_user}) }}">edit</a>
+
+
+                        <button type="submit" onclick="return confirm('Êtes-vous sûr ?')" class="btn btn-primary">Enregistrer</button>
+                        {{ form_end(form) }}
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card card-user">
+                <div class="card-body">
+                    <p class="card-text">
+                    <div class="author">
+                        <div class="block block-one"></div>
+                        <div class="block block-two"></div>
+                        <div class="block block-three"></div>
+                        <div class="block block-four"></div>
+                        <a href="javascript:void(0)">
+
+                            <img class="avatar" src="img/emilyz.jpg" alt="...">
+                            <h5 class="title">Mike Andrew</h5>
+                        </a>
+                        <p class="description">
+                            Ceo/Co-Founder
+                        </p>
+                    </div>
+                    </p>
+                    <div class="card-description">
+                        Do not be scared of the truth because we need to restart the human foundation in truth And I love you like Kanye loves Kanye I love Rick Owens’ bed design but the back is...
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="button-container">
+                        <button href="javascript:void(0)" class="btn btn-icon btn-round btn-facebook">
+                            <i class="fab fa-facebook"></i>
+                        </button>
+                        <button href="javascript:void(0)" class="btn btn-icon btn-round btn-twitter">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                        <button href="javascript:void(0)" class="btn btn-icon btn-round btn-google">
+                            <i class="fab fa-google-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ asset('js/core/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/core/popper.min.js') }}"></script>
+    <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/plugins/perfect-scrollbar.jquery.min.js') }}"></script>
+    <!--  Google Maps Plugin    -->
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script src="{{ asset('https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE') }}"></script>
+    <!-- Chart JS -->
+    <script src="{{ asset('js/plugins/chartjs.min.js') }}"></script>
+    <!--  Notifications Plugin    -->
+    <script src="{{ asset('js/plugins/bootstrap-notify.js') }}"></script>
+    <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="{{ asset('js/black-dashboard.min.js?v=1.0.0') }}"></script><!-- Black Dashboard DEMO methods, don't include it in your project! -->
+    <script src="{{ asset('demo/demo.js') }}"></script>
+{% endblock %}

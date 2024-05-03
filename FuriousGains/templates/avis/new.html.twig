@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Avis{% endblock %}
+
+{% block class %}
+    <h1>Create new Avis</h1>
+    <style>
+        /* Styles CSS */
+        .flash-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            max-width: 500px; /* Largeur maximale */
+            width: calc(100% - 40px); /* Largeur de la notification moins les marges */
+            text-align: center; /* Centrage du texte */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Police de caractères plus professionnelle */
+            font-size: 18px; /* Taille de la police */
+            line-height: 1.6; /* Hauteur de ligne agrandie */
+            border-radius: 10px;
+            padding: 25px;
+            background-color: #d1e7dd; /* Couleur de fond */
+            border: 2px solid #bcd0c7; /* Couleur de bordure */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15); /* Ombre légère */
+        }
+
+        .alert {
+            margin-bottom: 0; /* Supprimer la marge inférieure */
+            position: relative; /* Ajout de position relative */
+        }
+
+        .btn-close {
+            color: #777777; /* Couleur du bouton de fermeture */
+            font-size: 1.8rem; /* Taille de la police du bouton de fermeture */
+            border: none; /* Supprimer la bordure */
+            background: none; /* Arrière-plan transparent */
+            position: absolute;
+            top: 15px; /* Ajustement de la position verticale */
+            right: 15px; /* Ajustement de la position horizontale */
+            cursor: pointer; /* Changement du curseur */
+        }
+
+        .alert-success {
+            color: #155724; /* Couleur du texte pour le succès */
+        }
+
+        .alert-title {
+            font-size: 22px; /* Taille du titre */
+            margin-bottom: 15px; /* Marge inférieure du titre */
+            color: #333333; /* Couleur du titre */
+        }
+
+        .alert-content {
+            font-size: 16px; /* Taille du contenu */
+            color: #555555; /* Couleur du contenu */
+        }
+    </style>
+
+    {% for message in app.flashes('success') %}
+        <div class="flash-message">
+            <div class="alert alert-success alert-dismissible show" role="alert">
+                <div class="alert-title">Ajout réussi</div>
+                <div class="alert-content">{{ message }}</div>
+                <button type="button" class="btn-close" aria-label="Close">&times;</button>
+            </div>
+        </div>
+    {% endfor %}
+    <script>
+        // JavaScript pour fermer la notification lors du clic sur le bouton
+        document.addEventListener('DOMContentLoaded', function() {
+            var btnClose = document.querySelector('.btn-close');
+            btnClose.addEventListener('click', function() {
+                var flashMessage = document.querySelector('.flash-message');
+                flashMessage.style.display = 'none';
+            });
+        });
+    </script>
+
+    {{ include('avis/_form.html.twig') }}
+
+    <a href="{{ path('app_avis_index') }}">back to list</a>
+{% endblock %}

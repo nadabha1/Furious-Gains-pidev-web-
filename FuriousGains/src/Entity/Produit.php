@@ -42,6 +42,8 @@ class Produit
         $this->id_produit = $id_produit;
     }
 
+
+
     public function getMarqueProduit(): ?string
     {
         return $this->marque_produit;

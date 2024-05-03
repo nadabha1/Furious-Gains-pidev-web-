@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Avis index{% endblock %}
+
+{% block class %}
+    <h1>Avis index</h1>
+<h1 class="titre-rouge text-center">Recherche des avis par note</h1>
+            <form action="{{ path('search_avis') }}" method="GET" class=" form-petit text-center">
+                <div class="form-group">
+                    <input type="text"  name="keyword" class="form-control" placeholder="Entrez le note">
+                </div>
+                <button type="submit" class="btn btn-primary">Rechercher</button>
+            </form>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>IdAvis</th>
+                <th>Note</th>
+                <th>user</th>
+                <th>produit</th>
+                <th>Affichage</th>
+                <th>Modificaton</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        {% for avi in avis %}
+            <tr>
+                <td>{{ avi.idAvis }}</td>
+                <td>{{ avi.note }}</td>
+                <td>{{ avi.user.nom }}</td>
+                <td>{{ avi.produit.marqueProduit }}</td>
+                <td>
+                    <a href="{{ path('app_avis_show', {'idAvis': avi.idAvis}) }}">show</a>
+                    <a href="{{ path('telecharger_pdfavis', {'idAvis': avi.idAvis}) }}" class="btn btn-primary">Télécharger PDF</a>
+
+                </td>
+                <td>
+
+                <a href="{{ path('app_avis_edit', {'idAvis': avi.idAvis}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_avis_new') }}">Create new</a>
+{% endblock %}

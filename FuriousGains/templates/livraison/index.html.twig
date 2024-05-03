@@ -60,8 +60,23 @@
 {% block container %}
 {% endblock %}
 {% block features %}
-    <h1>Livraison index</h1>
-    <h1 class="titre-rouge text-center">Recherche des livraisons par StatutLivraison</h1>
+<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var containers = document.querySelectorAll('.qrcode-container');
+        containers.forEach(function(container) {
+            var reference = container.dataset.reference;
+            var qrcode = new QRCode(container, {
+                text: reference,
+                width: 100,
+                height: 100
+            });
+        });
+    });
+</script>
+    <h1>Liste des Livraisons</h1>
+    <h1 class="titre-rouge text-center">Recherche des livraisons par:</h1>
 
                 <form action="{{ path('search_livraison') }}" method="GET" class="form-petit text-center">
                                         <div class="form-group">
@@ -91,7 +106,7 @@
                 <th>AdresseLivraison</th>
                 <th>MontantPaiement</th>
                 <th>ModeLivraison</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -100,7 +115,10 @@
                 <td>{{ livraison.idLivraison }}</td>
                 <td>{{ livraison.dateLivraison ? livraison.dateLivraison|date('Y-m-d') : '' }}</td>
                 <td>{{ livraison.statutLivraison }}</td>
-                <td>{{ livraison.adresseLivraison }}</td>
+                <td>
+                <div class="qrcode-container" data-reference="{{ livraison.adresseLivraison }}"></div>
+                                        </td>
+
                 <td>{{ livraison.montantPaiement }}</td>
                 <td>{{ livraison.modeLivraison }}</td>
                 <td>
@@ -117,5 +135,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_livraison_new') }}">Create new</a>
+    <a href="{{ path('app_livraison_new') }}">Ajouter Une Nouvelle Livraison</a>
 {% endblock %}

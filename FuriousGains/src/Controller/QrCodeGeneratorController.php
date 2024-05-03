@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Commande;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,7 +17,7 @@ use Endroid\QrCode\Label\Font\NotoSans;
 
 class QrCodeGeneratorController extends AbstractController
 {
-    #[Route('/qr-codes', name: 'app_qr_codes')]
+    #[Route('/qr-codes/id', name: 'app_qr_codes')]
     public function index(): Response
     {
         // Récupérer le montant et le statut de la table "commande"
@@ -25,8 +26,8 @@ class QrCodeGeneratorController extends AbstractController
 
         // Vérifier si une commande a été trouvée
         if ($commande) {
-            $montant_total = $commande->getMontantPaiement();
-            $statut_commande  = $commande->getStatutLivraison();
+            $montant_total = $commande->getMontantTotal();
+            $statut_commande  = $commande->getStatutCommande();
         } else {
             // Gérer le cas où aucune commande n'est trouvée
             $montant_total = 'Montant inconnu';
@@ -39,7 +40,7 @@ class QrCodeGeneratorController extends AbstractController
         $qrCodes['montant'] = $montant_total; // Ajouter le montant à l'array $qrCodes
         $qrCodes['statut'] = $statut_commande; // Ajouter le statut à l'array $qrCodes
 
-        return $this->render('qr_code_generator/index.html.twig', $qrCodes);
+        return $this->render('qr_code_generator/index.html.twig', [$qrCodes,'commande' => $commande]);
     }
 
 }

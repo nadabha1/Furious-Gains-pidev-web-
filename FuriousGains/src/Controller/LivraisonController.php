@@ -5,16 +5,32 @@ namespace App\Controller;
 use App\Entity\Livraison;
 use App\Form\Livraison1Type;
 use App\Repository\LivraisonRepository;
+use App\Service\EmailSender;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Dompdf\Dompdf;
+use App\Service\SmsSender;
+use Symfony\Component\Notifier\Texter\TexterInterface;
+use Symfony\Component\Notifier\Message\SmsMessage;
+use Symfony\Component\Notifier\Recipient\PhoneRecipient;
 
 #[Route('/livraison')]
 class LivraisonController extends AbstractController
+
 {
+    private $smsSender;
+
+    public function __construct(SmsSender $smsSender )
+    {
+        $this->smsSender = $smsSender;
+
+        // $this->messageGenerator = $messageGenerator;
+        //$this->texter = $texter;
+
+    }
     #[Route('/', name: 'app_livraison_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -38,7 +54,9 @@ class LivraisonController extends AbstractController
             $entityManager->persist($livraison);
             $this->addFlash('success', 'Livraison ajouté avec succès.');
             $entityManager->flush();
-
+            $email=new EmailSender();
+            $email->sendEmail("nour.msaddek@esprit.tn ","Nouvelle livraison ","Livraison ajoutée avec succes ");
+            $this->smsSender->sendSms('+21621174221', 'Bonjour,votre livraison a été ajoutée avec succées. Merci pour votre confiance.');
             return $this->redirectToRoute('app_livraison_new', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -135,7 +153,7 @@ class LivraisonController extends AbstractController
         return $this->render('livraison/index.html.twig', [
             'livraisons' => $livraisons,
         ]);*/
-        $cin = $request->query->get('cin1');
+        $cin = $request->query->get('livraison');
         if ($cin) {
             $recherche_par = $request->query->get('recherche_par');
             switch ($recherche_par) {

@@ -1,4 +1,4 @@
-{% extends 'contact.html.twig' %}
+{% extends '/Dashboard.html.twig' %}
 
 {% block title %}Commande index{% endblock %}
 
@@ -40,8 +40,8 @@
 
                 <td>{{ commande.montantTotal }}</td>
                 <td>
-                    <a href="{{ path('app_commande_show', {'idCommand': commande.getIdCommand()}) }}">Afficher</a>
-                    <a href="{{ path('app_commande_edit', {'idCommand': commande.getIdCommand()}) }}">Modifier</a>
+                    <a href="{{ path('app_commande_showAdmin', {'idCommand': commande.getIdCommand()}) }}">Afficher</a>
+                    <a href="{{ path('app_commande_editAdmin', {'idCommand': commande.getIdCommand()}) }}">Modifier</a>
 
                 </td>
 

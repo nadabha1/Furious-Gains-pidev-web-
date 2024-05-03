@@ -1,0 +1,190 @@
+{% extends 'contact.html.twig' %}
+
+  
+
+
+{% block bar %}
+    <link rel="apple-touch-icon" sizes="76x76" href="img/apple-icon.png">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <title>
+        Black Dashboard by Creative Tim
+    </title>
+    <!-- Fonts and icons -->
+    <link href="{{ asset('https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800') }}" rel="stylesheet" />
+    <link href="{{ asset('https://use.fontawesome.com/releases/v5.0.6/css/all.css') }}" rel="stylesheet">
+    <!-- Nucleo Icons -->
+    <link href="{{ asset('css/nucleo-icons.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/produit.css') }}" rel="stylesheet" />
+
+    <!-- CSS Files -->
+    <link href="{{ asset('css/black-dashboard.css?v=1.0.0') }}" rel="stylesheet" />
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link href="{{ asset('demo/demo.css') }}" rel="stylesheet" />
+
+    <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
+        <a href="" class="navbar-brand">
+            <img class="w-25"  src="{{ asset ('img/logo2.png')}}" alt="Image" >
+        </a>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+            <div class="navbar-nav ml-auto p-4 bg-secondary">
+                <a href="{{path('homee')}}" class="nav-item nav-link ">Home</a>
+                <a href="{{path('read_produit')}}" class="nav-item nav-link active">Produit</a>
+                <a href="feature.html" class="nav-item nav-link">Livraison</a>
+                <a href="class.html" class="nav-item nav-link">Evenement</a>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Nutritioin</a>
+                    <div class="dropdown-menu text-capitalize">
+                        <a href="blog.html" class="dropdown-item">Regime</a>
+                        <a href="single.html" class="dropdown-item">Recette</a>
+                    </div>
+                </div>
+                <a href="contact.html" class="nav-item nav-link">Blog</a>
+                <a href="#" id="toggle-login" class="nav-item nav-link toggle-login ">Join Now<i ></i></a>
+                <a href="#" id="toggle-cart" class="nav-item nav-link">
+                    <img class="w-25" src="{{ asset('img/panier.png') }}" alt="Panier">
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div id="cart-bar" style="display: none;">
+   
+    </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleCart = document.getElementById('toggle-cart');
+        const cartBar = document.getElementById('cart-bar');
+
+        if (toggleCart && cartBar) {
+            toggleCart.addEventListener('click', function (event) {
+                event.preventDefault(); // Empêche la navigation par défaut
+
+                // Afficher ou masquer la barre de panier
+                if (cartBar.style.display === 'none') {
+                    cartBar.style.display = 'block';
+                } else {
+                    cartBar.style.display = 'none';
+                }
+            });
+        }
+
+        // Fonction pour ajouter un article au panier
+        function addToCart(productId, quantity) {
+            // Logique pour ajouter l'article au panier
+            console.log('Ajout de', quantity, 'produit(s) avec l\'ID', productId, 'au panier.');
+            // Vous pouvez ajouter ici la logique pour mettre à jour le contenu du panier ou envoyer une requête AJAX au backend
+        }
+
+        // Ecouteur d'événements pour le formulaire d'ajout au panier
+        const addToCartForm = document.getElementById('add-to-cart-form');
+        if (addToCartForm) {
+            addToCartForm.addEventListener('submit', function (event) {
+                event.preventDefault(); // Empêche l'envoi du formulaire par défaut
+
+                const productId = addToCartForm.querySelector('input[name="product_id"]').value;
+                const quantity = addToCartForm.querySelector('input[name="quantity"]').value;
+
+                addToCart(productId, quantity);
+            });
+        }
+    });
+</script>
+
+{% endblock %}
+
+
+
+{% block pageheader %}
+    <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 400px">
+        <h4 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase font-weight-bold">NOS PRODUITS</h4>
+    </div>
+{% endblock %}
+
+{% block container %}
+     <div class="row mb-3">
+        <div class="col-lg-6">
+            <form action="{{ path('search_product') }}" method="GET" class="d-flex">
+                <input type="text" name="keyword" class="form-control me-2" placeholder="Rechercher un produit...">
+                <button type="submit" class="btn btn-primary">Rechercher</button>
+            </form>
+        </div>
+        <div class="col-lg-6">
+    <form action="{{ path('search_product') }}" method="GET" class="d-flex align-items-center">
+        <label for="priceRange" class="form-label me-2">Sélectionnez la plage de prix en DT:</label>
+        <input type="range" name="minPrice" id="minPrice" class="form-range me-2" min="0" max="500" step="10" value="{{ app.request.query.get('minPrice') ?? '0' }}">
+        <input type="range" name="maxPrice" id="maxPrice" class="form-range me-2" min="0" max="500" step="10" value="{{ app.request.query.get('maxPrice') ?? '500' }}">
+        <span id="minPriceLabel" class="me-2">{{ app.request.query.get('minPrice') ?? '0' }}</span>
+        <span>  </span>
+        <span id="maxPriceLabel" class="me-2">{{ app.request.query.get('maxPrice') ?? '500' }}</span>
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+    </form>
+</div>
+
+<script>
+    const minPrice = document.getElementById('minPrice');
+    const maxPrice = document.getElementById('maxPrice');
+    const minPriceLabel = document.getElementById('minPriceLabel');
+    const maxPriceLabel = document.getElementById('maxPriceLabel');
+
+    // Met à jour les valeurs de prix affichées lorsque l'utilisateur modifie les curseurs
+    minPrice.addEventListener('input', function() {
+        minPriceLabel.textContent = this.value;
+    });
+
+    maxPrice.addEventListener('input', function() {
+        maxPriceLabel.textContent = this.value;
+    });
+</script>
+      
+    </div>
+    <div class="row">
+        {% for produit in produits %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card custom-card" style="background-color: white;">
+                    <a href="{{ path('details_produit', {'id': produit.getIdProduit()}) }}" class="card-link">
+                        <div class="card-body text-center">
+                                                    <h5 class="card-text">{{ produit.getMarqueProduit() }}</h5>
+
+                            <img src="{{ asset('img/' ~ produit.getImageName()) }}" class="card-img-top img-product" alt="Product Image">
+                            <p class="card-text">Price: {{ produit.getPrixProduit() }} TD </p>
+                            <a href="{{ path('details_produit', {'id': produit.getIdProduit()}) }}" class="btn btn-primary">Ajouter au panier</a>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            <div class="col">
+                <p>No products found!</p>
+            </div>
+        {% endfor %}
+    </div>
+    
+    {# Pagination #}
+    <div class="row justify-content-center">
+        <div class="col-auto">
+            {{ knp_pagination_render(produits) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block features %}
+    <script src="{{ asset('js/core/jquery.min.js') }}"></script>
+    <script src="{{ asset('js/core/popper.min.js') }}"></script>
+    <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('js/plugins/perfect-scrollbar.jquery.min.js') }}"></script>
+    <!-- Google Maps Plugin -->
+    <!-- Place this tag in your head or just before your close body tag. -->
+    <script src="{{ asset('https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE') }}"></script>
+    <!-- Chart JS -->
+    <script src="{{ asset('js/plugins/chartjs.min.js') }}"></script>
+    <!-- Notifications Plugin -->
+    <script src="{{ asset('js/plugins/bootstrap-notify.js') }}"></script>
+    <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
+    <script src="{{ asset('js/black-dashboard.min.js?v=1.0.0') }}"></script>
+    <!-- Black Dashboard DEMO methods, don't include it in your project! -->
+    <script src="{{ asset('demo/demo.js') }}"></script>
+{% endblock %}

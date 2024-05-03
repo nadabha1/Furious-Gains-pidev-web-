@@ -1,3 +1,12 @@
 #index:
 #    path: /
 #    controller: App\Controller\DefaultController::index
+filter_products_by_categorie:
+    path: '/filter-products-by-categorie'
+    controller: 'App\Controller\ProduitController::filterByCategorie'
+filter_produit:
+    path: '/filterproduit/{id}'
+    controller: 'App\Controller\ProduitController::filterByCategory'
+app_qr_code_generate:
+    path: /qr-code/generate
+    controller: App\Controller\QrCodeController::generate

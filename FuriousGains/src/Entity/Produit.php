@@ -11,26 +11,57 @@ class Produit
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id_produit;
-
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "La marque du produit ne doit pas être vide")]
+    #[Assert\Regex(
+        pattern: '/^(?=.*[a-zA-Z]).+$/',
+        message: "La marque du produit doit contenir au moins un caractère alphabétique"
+    )]
+    #[Assert\Length(max: 255, maxMessage: "La marque du produit ne peut pas dépasser {{ limit }} caractères")]
     private ?string $marque_produit;
-
     #[ORM\Column]
+    #[Assert\NotBlank(message: "La quantité ne doit pas être vide")]
+    #[Assert\GreaterThan(value: 0, message: "La quantité doit être supérieure à zéro")]
+    #[Assert\Regex(
+        pattern: '/^[^a-zA-Z]*$/',
+        message: "La quantité ne doit pas contenir de lettres de l'alphabet"
+    )]
+    #[Assert\Type(type: "numeric", message: "La quantité doit être un nombre entier positif")]
     private ?int $quantite;
-
+    
     #[ORM\Column(type: 'float')]
+    #[Assert\NotBlank(message: "Le prix du produit ne doit pas être vide")]
+    #[Assert\GreaterThan(value: 0, message: "Le prix du produit doit être supérieur à zéro")]
+    #[Assert\Regex(
+        pattern: '/^[^a-zA-Z]*$/',
+        message: "Le prix ne doit pas contenir de lettres de l'alphabet"
+    )]
+    #[Assert\Type(type: "numeric", message: "Le prix du produit doit être un nombre positif")]
     private ?float $prix_produit;
+    
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name:'description', length: 255)]
+    #[Assert\NotBlank(message: "La description ne doit pas être vide !")]
+    #[Assert\Regex(
+        pattern: '/^(?=.*[a-zA-Z]).+$/',
+        message: "La description doit contenir au moins un caractère alphabétique"
+    )]
+    #[Assert\Length(max: 255, maxMessage: "La description ne peut pas dépasser {{ limit }} caractères")]
     private ?string $description;
+
+    //#[ORM\Column(name: "idC")] // Assurez-vous que la colonne correspond à votre schéma de base de données
+    //private ?int $idC;
+
+    #[ORM\ManyToOne(targetEntity: Categorie::class, cascade:['persist'])]
+    #[ORM\JoinColumn(name: "id_categorie", referencedColumnName: "id_categorie",nullable: false)]
+    private ?Categorie $id_categorie = null;
+    //private ?Categorie $categorie;
 
     #[ORM\Column(length: 255)]
     private ?string $image_name;
 
-    #[ORM\ManyToOne(targetEntity: Categorie::class)]
-    #[ORM\JoinColumn(name: "id_categorie", referencedColumnName: "id_categorie")]
-    private ?Categorie $id_categorie;
-
+    
+    
 
     public function getIdProduit(): ?int
     {
@@ -99,8 +130,12 @@ class Produit
         return $this->id_categorie;
     }
 
-    public function setIdCategorie(?Categorie $id_categorie): void
+    public function setIdCategorie(Categorie $id_categorie): static
     {
         $this->id_categorie = $id_categorie;
+        return $this;
+    }
+    public function __toString(): string{
+        return $this->getIdProduit();
     }
 }

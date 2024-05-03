@@ -1,0 +1,19 @@
+{# templates/pagination/pagination_custom.html.twig #}
+{% set pagination = knp_pagination_render(produits, 'pagination/sliding.html.twig') %}
+{% set items = pagination.pagination|merge({ previous: pagination.previous, next: pagination.next }) %}
+
+{% if items %}
+    <ul class="pagination">
+        {% for item in items %}
+            {% if item is iterable %}
+                <li class="page-item">
+                    {{ knp_pagination_sortable(item, 'Previous') }}
+                </li>
+            {% else %}
+                <li class="page-item{{ item.isCurrentPage ? ' active' }}">
+                    {{ knp_pagination_sortable(item) }}
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}

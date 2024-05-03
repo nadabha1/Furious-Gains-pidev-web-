@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity]
 
@@ -15,11 +17,27 @@ class Categorie
     private ?int $id_categorie;
 
     #[ORM\Column(length:255)]
-
+    #[Assert\NotBlank(message: "Le nom de la catégorie ne peut pas être vide")]
+    #[Assert\Regex(
+        pattern: '/^(?=.*[a-zA-Z]).+$/',
+        message: "Le nom de la catégorie doit contenir au moins un caractère"
+    )]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "Le nom de la catégorie ne peut pas dépasser {{ limit }} caractères"
+    )]
     private ?string $nom_categorie;
 
-    #[ORM\Column(length:255)]
-
+    #[ORM\Column(name:'descriptionC',length:255)]
+    #[Assert\NotBlank(message: "La description ne peut pas être vide")]
+    #[Assert\Regex(
+        pattern: '/^(?=.*[a-zA-Z]).+$/',
+        message: "La descriprition doit contenir au moins un caractère"
+    )]
+    #[Assert\Length(
+        max: 255,
+        maxMessage: "La description ne peut pas dépasser {{ limit }} caractères"
+    )]
     private ?string $descriptionC;
 
     public function getIdCategorie(): ?int
@@ -50,6 +68,10 @@ class Categorie
     public function setDescriptionC(?string $descriptionC): void
     {
         $this->descriptionC = $descriptionC;
+    }
+    public function __toString(): string
+    {
+        return $this->getIdCategorie();
     }
 
 

@@ -76,10 +76,11 @@ class UserController extends AbstractController
             ['iduser' => $iduser]
         ]);
     }
-    #[Route('/readUser/{iduser}', name: 'readUser', methods: ['GET', 'POST'])]
-    public function readUser(UserRepository $repo,EntityManagerInterface $manager, Request $request, $iduser): Response
+    #[Route('/readUser', name: 'readUser', methods: ['GET', 'POST'])]
+    public function readUser(UserRepository $repo,EntityManagerInterface $manager, Request $request, $iduser,AuthenticationUtils $authenticationUtils): Response
     {
-        $user=$this->userRepository->find($iduser);
+        $lastUsername = $authenticationUtils->getLastUsername();
+        $user=$this->userRepository->findOneByEmail($lastUsername);
             $form=$this->createForm(UserType::class,$user);
             $form->remove('token');
             $form->remove('image');
@@ -180,48 +181,7 @@ class UserController extends AbstractController
       
     }
 
-    #[Route('/login', name: 'login')]
-    public function login(AuthenticationUtils $authenticationUtils, UserPasswordEncoderInterface $passwordEncoder,ManagerRegistry $manager,Request $request,UserRepository $repo)
-    {
-        // Récupérez l'email et le mot de passe de l'utilisateur depuis le formulaire de connexion
-        $email = $request->request->get('loginUsername');
-        $password = $request->request->get('loginpass');
-
-        // Récupérez l'utilisateur à partir de votre source de données (par exemple, la base de données)
-        $user = $repo->findOneByEmail($email);
-
-        if (!$user) {
-            $this->session->getFlashBag()->add('error', 'L\'utilisateur n\'existe pas.');
-            return $this->redirectToRoute('homee');
-        }
-        // Vérifiez le mot de passe en utilisant le PasswordEncoder
-        if ($passwordEncoder->isPasswordValid($user, $password)) {
-            if ($user->getBan()==0){
-                if ($user->getRoles()=="Client")
-            {
-                return $this->redirectToRoute('readUser', [
-                    'User' => $user,'iduser'=>$user->getCin()
-                ]);
-
-            }
-            elseif ($user->getRoles()=="Admin"){
-                return $this->redirectToRoute('Admin', [
-                    'User' => $user,'iduser'=>$user->getCin()
-                ]);
-            }
-            }
-            else{
-                $this->session->getFlashBag()->add('error', 'Votre compte est banée');
-                return $this->redirectToRoute('homee');
-            }
-
-        } else {
-            $this->session->getFlashBag()->add('error', 'L\'utilisateur n\'existe pas.');
-            return $this->redirectToRoute('homee');
-
-        }
-
-    }
+    
 
     #[Route('/ajout', name: 'app_user.Ajout'),IsGranted('ROLE_ADMIN')]
     public function AjouterUser(Request $request,UserPasswordHasherInterface $userPasswordHasher): Response

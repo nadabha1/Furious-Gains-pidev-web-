@@ -13,8 +13,13 @@
                 <a href="{{path('homee')}}" class="nav-item nav-link active">Home</a>
                 <a href="{{asset('../feature.html.twig')}}" class="nav-item nav-link">Produit</a>
                 <a href="class.html" class="nav-item nav-link">Evenement</a>
-                <a href="{{path('app_livraison_index')}}" class="nav-item nav-link">livraison</a>
                 <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Livraison</a>
+                    <div class="dropdown-menu text-capitalize">
+                        <a href="{{path('app_livraison_index')}}" class="dropdown-item">vos Livraisons</a>
+                        <a href="{{path('app_commande_index')}}" class="dropdown-item"> vos Commandes</a>
+                    </div>
+                </div>                <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Nutritioin</a>
                     <div class="dropdown-menu text-capitalize">
                         <a href="blog.html" class="dropdown-item">Regime</a>
@@ -28,6 +33,7 @@
                         <a href="{{path('app_annonces_index')}}" class="dropdown-item">Annonces</a>
                     </div>
                 </div>
+                <a href="{{path('readUser')}}" class="nav-item nav-link">Profil</a>
             </div>
         </div>
     </nav>

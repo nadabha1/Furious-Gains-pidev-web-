@@ -13,7 +13,6 @@ class Categorie
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id_categorie;
-    private ?int $id_categorie;
 
     #[ORM\Column(length:255)]
 
@@ -25,7 +24,6 @@ class Categorie
 
     public function getIdCategorie(): ?int
     {
-        return $this->id_categorie;
         return $this->id_categorie;
     }
 

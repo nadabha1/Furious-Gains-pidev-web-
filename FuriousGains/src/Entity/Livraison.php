@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Entity;
-use Symfony\Component\Validator\Constraints as Assert;
+
 use Doctrine\DBAL\Types\Types;
+use Symfony\Component\Validator\Constraints as Assert;
 use Doctrine\ORM\Mapping as ORM;
 use FontLib\Table\Type\name;
 
@@ -18,7 +19,7 @@ class Livraison
     private ?int $idLivraison;
 
     #[ORM\Column( type: Types::DATE_MUTABLE)]
-    #[Assert\DateTime]
+
 
     private ?\DateTimeInterface $dateLivraison;
 
@@ -28,15 +29,17 @@ class Livraison
     private ?string $statutLivraison;
 
     #[ORM\Column(length:255)]
-
+    #[Assert\NotBlank(message:"Il faut compléter le champ adresse livraison")]
     private ?string$adresseLivraison;
 
     #[ORM\Column]
 
+    #[Assert\Positive(message:"Le montant doit être positif")]
+    #[Assert\NotBlank(message:"Il faut compléter le champ montant paiement")]
     private ?float $montantPaiement;
 
     #[ORM\Column(length:255)]
-
+    #[Assert\NotBlank(message:"Il faut completer le champ mode livraison")]
     private ?string $modeLivraison;
     #[ORM\ManyToOne(targetEntity: Commande::class)]
     #[ORM\JoinColumn(name: "id_commande", referencedColumnName: "id_command")]

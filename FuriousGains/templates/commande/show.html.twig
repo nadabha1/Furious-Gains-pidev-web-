@@ -1,0 +1,30 @@
+{% extends 'contact.html.twig' %}
+
+{% block title %}Commande{% endblock %}
+
+{% block container %}
+    <h1>Commande</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>IdCommand</th>
+                <td>{{ commande.idCommand }}</td>
+            </tr>
+            <tr>
+                <th>StatutCommande</th>
+                <td>{{ commande.statutCommande }}</td>
+            </tr>
+            <tr>
+                <th>MontantTotal</th>
+                <td>{{ commande.montantTotal }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_commande_index') }}">back to list</a>
+
+    <a href="{{ path('app_commande_edit', {'idCommand': commande.idCommand}) }}">edit</a>
+
+    {{ include('commande/_delete_form.html.twig') }}
+{% endblock %}

@@ -94,7 +94,7 @@ class Produit
         $this->image_name = $image_name;
     }
 
-    public function getIdCategorie(): ?Categorie
+    public function getId_categorie(): ?Categorie
     {
         return $this->id_categorie;
     }

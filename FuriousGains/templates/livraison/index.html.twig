@@ -1,10 +1,101 @@
 {% extends 'contact.html.twig' %}
+{% block bar  %}
+    <link rel="apple-touch-icon" sizes="76x76" href="img/apple-icon.png">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <title>
+        Black Dashboard by Creative Tim
+    </title>
+    <!--     Fonts and icons     -->
+    <link href="{{ asset('https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800') }}" rel="stylesheet" />
+    <link href="{{ asset('https://use.fontawesome.com/releases/v5.0.6/css/all.css') }}" rel="stylesheet">
+    <!-- Nucleo Icons -->
+    <link href="{{ asset('css/nucleo-icons.css') }}" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link href="{{ asset('css/black-dashboard.css?v=1.0.0') }}" rel="stylesheet" />
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link href="{{ asset('demo/demo.css') }}" rel="stylesheet" />
+    <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
+        <a href="" class="navbar-brand">
+            <img class="w-25"  src="{{ asset ('img/logo2.png')}}" alt="Image">
+        </a>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+            <div class="navbar-nav ml-auto p-4 bg-secondary">
+                <a href="{{path('homee')}}" class="nav-item nav-link active">Home</a>
+                <a href="{{asset('../feature.html.twig')}}" class="nav-item nav-link">Produit</a>
+                <a href="class.html" class="nav-item nav-link">Evenement</a>
+                 <a href="{{path('app_livraison_index')}}" class="nav-item nav-link">Livraison</a>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Nutrition</a>
+                    <div class="dropdown-menu text-capitalize">
+                        <a href="blog.html" class="dropdown-item">Regime</a>
+                        <a href="single.html" class="dropdown-item">Recette</a>
+                    </div>
+                </div>
+                <a href="contact.html" class="nav-item nav-link">Blog</a>
+            </div>
+        </div>
+    </nav>
+    {% for flashMessage in app.session.flashBag.get('error') %}
+        <div class="alert alert-danger">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+{% endblock %}
+  {% block pageheader %}
 
-{% block title %}Livraison index{% endblock %}
+      <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 400px">
+          <h4 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase font-weight-bold">Livraison</h4>
+          <div class="d-inline-flex">
+              <p class="m-0 text-white"><a class="text-white" href="{{path('app_livraison_index')}}" >Home</a></p>
+              <p class="m-0 text-white px-2">/</p>
+              <p class="m-0 text-white">Liste Livraison</p>
+          </div>
+      </div>
+  {% endblock %}
+
+{% block title %}Liste Livraison{% endblock %}
 {% block container %}
 {% endblock %}
 {% block features %}
-    <h1>Livraison index</h1>
+<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var containers = document.querySelectorAll('.qrcode-container');
+        containers.forEach(function(container) {
+            var reference = container.dataset.reference;
+            var qrcode = new QRCode(container, {
+                text: reference,
+                width: 100,
+                height: 100
+            });
+        });
+    });
+</script>
+    <h1>Liste des Livraisons</h1>
+    <h1 class="titre-rouge text-center">Recherche des livraisons par:</h1>
+
+                <form action="{{ path('search_livraison') }}" method="GET" class="form-petit text-center">
+                                        <div class="form-group">
+                                            <label for="recherchepar" class="sr-only">Recherche par</label>
+                                            <select id="recherchepar" name="recherche_par" class="form-control">
+                                                <option value="statutLivraison">statutLivraison</option>
+                                                <option value="adresse">adresseLivraison</option>
+                                                <!-- Ajoutez d'autres options de recherche ici -->
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cin1" class="sr-only">Valeur de recherche</label>
+                                            <input type="text" id="cin1" name="cin1" class="form-control" placeholder="Entrez la valeur de recherche">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Rechercher</button>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
+                </form>
 
     <table class="table">
         <thead>
@@ -15,21 +106,25 @@
                 <th>AdresseLivraison</th>
                 <th>MontantPaiement</th>
                 <th>ModeLivraison</th>
-                <th>actions</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for livraison in livraisons %}
             <tr>
                 <td>{{ livraison.idLivraison }}</td>
-                <td>{{ livraison.dateLivraison ? livraison.dateLivraison|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ livraison.dateLivraison ? livraison.dateLivraison|date('Y-m-d') : '' }}</td>
                 <td>{{ livraison.statutLivraison }}</td>
-                <td>{{ livraison.adresseLivraison }}</td>
+                <td>
+                <div class="qrcode-container" data-reference="{{ livraison.adresseLivraison }}"></div>
+                                        </td>
+
                 <td>{{ livraison.montantPaiement }}</td>
                 <td>{{ livraison.modeLivraison }}</td>
                 <td>
                     <a href="{{ path('app_livraison_show', {'idLivraison': livraison.idLivraison}) }}">show</a>
                     <a href="{{ path('app_livraison_edit', {'idLivraison': livraison.idLivraison}) }}">edit</a>
+                   <a href="{{ path('telecharger_pdf', {'idLivraison': livraison.idLivraison}) }}" class="btn btn-primary">Télécharger PDF</a>
                 </td>
             </tr>
         {% else %}
@@ -40,5 +135,5 @@
         </tbody>
     </table>
 
-    <a href="{{ path('app_livraison_new') }}">Create new</a>
+    <a href="{{ path('app_livraison_new') }}">Ajouter Une Nouvelle Livraison</a>
 {% endblock %}

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF du livraison </title>
+    <style>
+        body {
+            font-family: Georgia, sans-serif;
+            font-size: 14px;
+            background-color: #f2f2f2;
+            margin: 40px;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 24px;
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-top: 0;
+        }
+
+        p {
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .don-info {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+
+        img {
+            width: 100px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        h5 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            color: blue;
+            font-weight: bold;
+        }
+
+        .thank-you {
+            text-align: center;
+            font-style: Geometric;
+            color: #000080;
+            margin-top: 40px;
+            font-size: 20px;
+        }
+
+        .date-telechargement {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+<p class="date-telechargement">Date de téléchargement : {{ date_telechargement|date('d/m/Y H:i:s') }}</p>
+<br>
+<br>
+<br>
+<div class="don-info">
+    <h1>Informations sur la livraison</h1>
+    <img src="C:\Users\21621\OneDrive\Bureau\Projet web\Furious-Gains-pidev-web--main\FuriousGains\img">
+    <h5><span  class="highlight">Mode de la livraison :</span>&nbsp;{{ livraison.modeLivraison }} <br> <span class="highlight"> Date de la Livraison: </span>{{ livraison.dateLivraison |date('d/m/Y')}}</h5><br><br>
+
+    <p><span class="highlight">StatutLivraison :</span> {{ livraison.statutLivraison }}</p>
+    <p><span class="highlight">MontantPaiement :</span> {{ livraison.montantPaiement }} DT</p>
+    <p><span class="highlight">AdresseLivraison :</span> {{ livraison.adresseLivraison }}</p>
+</div>
+<p class="thank-you">Merci Pour Votre Confiance!</p>
+</body>
+</html>

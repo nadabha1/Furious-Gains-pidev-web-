@@ -3,16 +3,34 @@
 namespace App\Controller;
 
 use App\Entity\Livraison;
-use App\Form\LivraisonType;
+use App\Form\Livraison1Type;
+use App\Repository\LivraisonRepository;
+use App\Service\EmailSender;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Dompdf\Dompdf;
+use App\Service\SmsSender;
+use Symfony\Component\Notifier\Texter\TexterInterface;
+use Symfony\Component\Notifier\Message\SmsMessage;
+use Symfony\Component\Notifier\Recipient\PhoneRecipient;
 
 #[Route('/livraison')]
 class LivraisonController extends AbstractController
+
 {
+    private $smsSender;
+
+    public function __construct(SmsSender $smsSender )
+    {
+        $this->smsSender = $smsSender;
+
+        // $this->messageGenerator = $messageGenerator;
+        //$this->texter = $texter;
+
+    }
     #[Route('/', name: 'app_livraison_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -29,14 +47,17 @@ class LivraisonController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $livraison = new Livraison();
-        $form = $this->createForm(LivraisonType::class, $livraison);
+        $form = $this->createForm(Livraison1Type::class, $livraison);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($livraison);
+            $this->addFlash('success', 'Livraison ajouté avec succès.');
             $entityManager->flush();
-
-            return $this->redirectToRoute('app_livraison_index', [], Response::HTTP_SEE_OTHER);
+            $email=new EmailSender();
+            $email->sendEmail("nour.msaddek@esprit.tn ","Nouvelle livraison ","Livraison ajoutée avec succes ");
+            $this->smsSender->sendSms('+21621174221', 'Bonjour,votre livraison a été ajoutée avec succées. Merci pour votre confiance.');
+            return $this->redirectToRoute('app_livraison_new', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->renderForm('livraison/new.html.twig', [
@@ -56,7 +77,7 @@ class LivraisonController extends AbstractController
     #[Route('/{idLivraison}/edit', name: 'app_livraison_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Livraison $livraison, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(LivraisonType::class, $livraison);
+        $form = $this->createForm(Livraison1Type::class, $livraison);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -80,5 +101,77 @@ class LivraisonController extends AbstractController
         }
 
         return $this->redirectToRoute('app_livraison_index', [], Response::HTTP_SEE_OTHER);
+    }
+    #[Route('/telecharger_pdf/{idLivraison}', name: 'telecharger_pdf')]
+    public function telechargerPdf(Request $request, $idLivraison): Response
+    {
+        // Récupérer le don depuis la base de données (ou tout autre moyen)
+        $livraison= $this->getDoctrine()->getRepository(Livraison::class)->find($idLivraison);
+
+        if (!$livraison) {
+            throw $this->createNotFoundException('Livraison non trouvé');
+        }
+
+        // Créer un nouveau document PDF avec livpdf
+        $dompdf = new Dompdf();
+        $html = $this->renderView('livraison/pdf.html.twig', [
+            'livraison' => $livraison,
+            'date_telechargement' => new \DateTime(),
+        ]);
+        $dompdf->loadHtml($html);
+
+        // (Optionnel) Définir les options du PDF
+        $dompdf->setPaper('A4', 'portrait');
+
+        // Rendre le PDF
+        $dompdf->render();
+
+        // Générer le nom du fichier PDF
+        $nomFichier = sprintf('livraison_%s.pdf', $livraison->getidlivraison());
+
+        // Créer une réponse avec le contenu du PDF
+        $response = new Response(
+            $dompdf->output(),
+            Response::HTTP_OK,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => sprintf('attachment; filename="%s"', $nomFichier)
+            ]
+        );
+
+        // Envoyer la réponse pour télécharger le fichier PDF
+        return $response;
+    }
+    #[Route('/search/livraison', name: 'search_livraison')]
+    public function searchProducts(Request $request, LivraisonRepository $livraisonRepository): Response
+    {
+        /*$keyword = $request->query->get('keyword');
+
+        // Recherche des produits correspondant au mot-clé
+        $livraisons = $livraisonRepository->findByKeywordQuery($keyword);
+
+        return $this->render('livraison/index.html.twig', [
+            'livraisons' => $livraisons,
+        ]);*/
+        $cin = $request->query->get('livraison');
+        if ($cin) {
+            $recherche_par = $request->query->get('recherche_par');
+            switch ($recherche_par) {
+                case 'statutLivraison':
+                    $livraisons = $livraisonRepository->findByKeywordQuery($cin);
+                    break;
+                case 'adresse':
+                    $livraisons = $livraisonRepository->findOneByadresse($cin);
+                    break;
+                default:
+                    $livraisons = [];
+            }
+        } else {
+            $livraisons = [];
+        }
+        return $this->render('livraison/index.html.twig', [
+            'livraisons' => $livraisons,
+        ]);
+
     }
 }

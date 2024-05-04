@@ -18,7 +18,7 @@ class EmailService
     public function sendEmail(string $recipient, string $subject, string $message)
     {
         $email = (new Email())
-            ->from('mahmoudkhm71@gmail.com')
+            ->from('nadabha135@gmail.com')
             ->to($recipient)
             ->subject($subject)
             ->html($message); // Utiliser html() pour définir le contenu au format HTML

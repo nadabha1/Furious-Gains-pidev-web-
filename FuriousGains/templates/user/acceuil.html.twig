@@ -22,8 +22,8 @@
                 </div>                <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Nutritioin</a>
                     <div class="dropdown-menu text-capitalize">
-                        <a href="blog.html" class="dropdown-item">Regime</a>
-                        <a href="single.html" class="dropdown-item">Recette</a>
+                        <a href="{{path('app_recette_index')}}" class="dropdown-item">Regime</a>
+                        <a href="{{path('app_regime_index')}}" class="dropdown-item">Recette</a>
                     </div>
                 </div>
                 <div class="nav-item dropdown">
@@ -43,6 +43,7 @@
         </div>
     {% endfor %}
 {% endblock %}
+
 {% block login%}
     <!-- Inclure les fichiers CSS -->
 

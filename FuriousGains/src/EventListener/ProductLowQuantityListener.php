@@ -5,20 +5,24 @@ use App\Entity\Produit;
 use Doctrine\ORM\EntityManagerInterface;
 
 use App\Event\ProductLowQuantityEvent;
-use App\Service\EmailService;
+//use App\Service\EmailService;
+use App\Service\EmailSender;
+
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class ProductLowQuantityListener implements EventSubscriberInterface
 {
     private const LOW_QUANTITY_THRESHOLD = 5;
 
-    private $emailService;
+    //private $emailService;
+    private $emailSender;
+
     private $entityManager;
 
 
-    public function __construct(EmailService $emailService, EntityManagerInterface $entityManager)
+    public function __construct(EmailSender $emailSender, EntityManagerInterface $entityManager)
     {
-        $this->emailService = $emailService;
+        $this->emailSender = $emailSender;
         $this->entityManager = $entityManager;
 
     }
@@ -123,7 +127,7 @@ class ProductLowQuantityListener implements EventSubscriberInterface
     
             try {
                 // Envoyer l'e-mail avec le contenu personnalisé
-                $this->emailService->sendEmail($recipient, $subject, $message);
+                $this->emailSender->sendEmail($recipient, $subject, $message);
                 // Enregistrer l'envoi réussi dans les journaux
                 // $logger->info('Low quantity alert email sent successfully');
             } catch (\Swift_TransportException $e) {

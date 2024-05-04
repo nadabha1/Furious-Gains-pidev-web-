@@ -110,14 +110,48 @@
                 <p class="text-muted">Prix : {{ produit.prixProduit }}</p>
                 <p>{{ produit.description }}</p>
                 <!-- Ajoutez d'autres détails du produit selon vos besoins -->
-             <form method="post" action="{{ path('add_to_cart', {'id': produit.getIdProduit()}) }}" class="form-inline">
-    <div class="form-group mr-2">
-        <!-- Champ pour la quantité -->
-        <input type="number" id="quantity" name="quantity" class="form-control form-control-sm" value="1" min="1" style="width: 70px;">
-    </div>
-    <input type="hidden" name="product_id" value="{{ produit.getIdProduit() }}">
-    <button type="submit" class="btn btn-primary">Ajouter au panier</button>
-</form>
+                <form id="addToCartForm{{ produit.getIdProduit() }}" method="post" action="{{ path('add_to_cart', {'id': produit.getIdProduit()}) }}" class="form-inline">
+                    <div class="form-group mr-2">
+                        <!-- Champ pour la quantité -->
+                        <input type="number" id="quantity" name="quantity" class="form-control form-control-sm" value="1" min="1" style="width: 70px;">
+                    </div>
+                    <input type="hidden" name="product_id" value="{{ produit.getIdProduit() }}">
+                    <!-- Bouton pour ajouter au panier -->
+                    <button type="button" class="btn btn-primary addToCartBtn" data-bs-toggle="confirmation" data-bs-target="#addToCartConfirmation{{ produit.getIdProduit() }}">Ajouter au panier</button>
+                </form>
+
+                <!-- Barre de confirmation pour ajouter au panier -->
+                <div class="confirmation-bar" id="addToCartConfirmation{{ produit.getIdProduit() }}" style="display: none;">
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        Voulez-vous vraiment ajouter "{{ produit.getMarqueProduit() }}" au panier ?
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <div class="btn-group" role="group" aria-label="Confirmation buttons">
+                            <!-- Bouton pour annuler -->
+                            <button type="button" class="btn btn-secondary" onclick="hideConfirmation('addToCartConfirmation{{ produit.getIdProduit() }}')">Annuler</button>
+                            <!-- Bouton pour confirmer -->
+                            <button type="button" class="btn btn-primary" onclick="document.getElementById('addToCartForm{{ produit.getIdProduit() }}').submit();">Confirmer</button>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    // Fonction pour afficher la barre de confirmation
+                    function showConfirmation(confirmationId) {
+                        document.getElementById(confirmationId).style.display = "block";
+                    }
+
+                    // Fonction pour masquer la barre de confirmation
+                    function hideConfirmation(confirmationId) {
+                        document.getElementById(confirmationId).style.display = "none";
+                    }
+
+                    // Attache un gestionnaire d'événements à tous les boutons "Ajouter au panier"
+                    document.querySelectorAll('.addToCartBtn').forEach(item => {
+                        item.addEventListener('click', event => {
+                            showConfirmation(event.target.getAttribute('data-bs-target').replace('#', ''));
+                        });
+                    });
+                </script>
 
             </div>
         </div>

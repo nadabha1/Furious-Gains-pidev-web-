@@ -1,37 +1,41 @@
 <?php
 
+// src/Entity/Regime.php
 namespace App\Entity;
 
+use App\Repository\RegimeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: RegimeRepository::class)]
 class Regime
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $idRegime;
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
-    #[ORM\Column(length:255)]
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $typeRegime = null;
 
-    private ?string $typeRegime;
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $nomRegime = null;
 
-    #[ORM\Column(length:255)]
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $instruction = null;
 
-    private ?string $nomRegime;
+    #[ORM\OneToMany(mappedBy: 'regime', targetEntity: Recette::class)]
+    private Collection $recettes;
 
-    #[ORM\Column(length:255)]
-
-    private ?string $instruction;
-
-    public function getIdRegime(): ?int
+    public function __construct()
     {
-        return $this->idRegime;
+        $this->recettes = new ArrayCollection();
     }
 
-    public function setIdRegime(?int $idRegime): void
+    public function getId(): ?int
     {
-        $this->idRegime = $idRegime;
+        return $this->id;
     }
 
     public function getTypeRegime(): ?string
@@ -39,9 +43,11 @@ class Regime
         return $this->typeRegime;
     }
 
-    public function setTypeRegime(?string $typeRegime): void
+    public function setTypeRegime(string $typeRegime): static
     {
         $this->typeRegime = $typeRegime;
+
+        return $this;
     }
 
     public function getNomRegime(): ?string
@@ -49,9 +55,11 @@ class Regime
         return $this->nomRegime;
     }
 
-    public function setNomRegime(?string $nomRegime): void
+    public function setNomRegime(string $nomRegime): static
     {
         $this->nomRegime = $nomRegime;
+
+        return $this;
     }
 
     public function getInstruction(): ?string
@@ -59,10 +67,37 @@ class Regime
         return $this->instruction;
     }
 
-    public function setInstruction(?string $instruction): void
+    public function setInstruction(string $instruction): static
     {
         $this->instruction = $instruction;
+
+        return $this;
     }
 
+    public function getRecettes(): Collection
+    {
+        return $this->recettes;
+    }
 
+    public function addRecette(Recette $recette): static
+    {
+        if (!$this->recettes->contains($recette)) {
+            $this->recettes[] = $recette;
+            $recette->setRegime($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecette(Recette $recette): static
+    {
+        if ($this->recettes->removeElement($recette)) {
+            // set the owning side to null (unless already changed)
+            if ($recette->getRegime() === $this) {
+                $recette->setRegime(null);
+            }
+        }
+
+        return $this;
+    }
 }

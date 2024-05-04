@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use App\Service\EmailSender;
 use League\Csv\CannotInsertRecord;
 use League\Csv\Exception;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -86,18 +87,22 @@ class UserController extends AbstractController
             return $this->renderForm('user/AfficherUser.html.twig', [
                 'form' => $form->createView(),
                 'User' => $user,
-                'iduser' => $user->getId_user()
+                'iduser' => $user->getId_user(),
+                'nom'=>$user->getNom()
             ]);            }
         return $this->render('user/AfficherUser.html.twig', [
             'form' => $form->createView(),
             'User' => $user,
-            ['iduser' => $user->getId_user()]
+            ['iduser' => $user->getId_user(),
+            'nom'=>$user->getNom()]
         ]);
 
     }
     #[Route('/homee', name: 'homee')]
-    public function homeee(ManagerRegistry $manager,Request $request): Response
-    { $user =new User();
+    public function homeee(ManagerRegistry $manager,Request $request, AuthenticationUtils $authenticationUtils): Response
+    {   $user =new User();
+        $lastUsername = $authenticationUtils->getLastUsername();
+        $user1=$this->userRepository->findOneByEmail($lastUsername);
         $form=$this->createForm(UserType::class,$user);
         $user->setBan(0);
         $user->setRole("Client");
@@ -129,8 +134,8 @@ class UserController extends AbstractController
             $em->persist($user);
             $em->flush();
             //8
-            return $this->redirectToRoute('homee'); }
-        return $this->renderForm('user/acceuil.html.twig',['formUser'=>$form]);
+            return $this->redirectToRoute('homee',['nom'=>$user1->getNom()]); }
+        return $this->renderForm('user/acceuil.html.twig',['formUser'=>$form,'nom'=>$user1->getNom()]);
 
     }
 
@@ -170,15 +175,17 @@ class UserController extends AbstractController
             $em->flush();
             //8
             return $this->redirectToRoute('homee'); }
-        return $this->renderForm('user/acceuil.html.twig',['formUser'=>$form]);
+        return $this->renderForm('user/acceuil.html.twig',['formUser'=>$form,'nom'=>$user->getNom()]);
 
     }
 
 
 
     #[Route('/ajout', name: 'app_user.Ajout'),IsGranted('ROLE_ADMIN')]
-    public function AjouterUser(Request $request,UserPasswordHasherInterface $userPasswordHasher): Response
+    public function AjouterUser(Request $request,UserPasswordHasherInterface $userPasswordHasher, AuthenticationUtils $authenticationUtils): Response
     {     $user = new User();
+        $lastUsername = $authenticationUtils->getLastUsername();
+        $user1=$this->userRepository->findOneByEmail($lastUsername);
         $em = $this->managerRegistry->getManager();
         $form = $this->createForm(UserType::class, $user);
         $form->remove('token');
@@ -200,18 +207,21 @@ class UserController extends AbstractController
             $em->persist($user);
             $em->flush();
             $email=new EmailSender();
-            $email->sendEmail("nadabha2@gmail.com","sujet lena","text lena");
+            $email->sendEmail("nadabha2@gmail.com","Ajouter user","User ajouter avec succées");
             $this->addFlash('success',"user ajouté avec succe");
-            return $this->redirectToRoute("app_user.Afficher");
+            return $this->redirectToRoute("app_user.Afficher",['nom'=>$user1->getNom()]);
         }
 
         return $this->render('Admin/AddAmin.html.twig', [
             'form' => $form->createView(),
+            'nom'=>$user1->getNom()
         ]);
     }
     #[Route('/rechercheAdmin', name: 'app_user.rechercher'),IsGranted('ROLE_ADMIN')]
-    public function AfficherUserParCin(Request $request,UserRepository $userRepository): Response
+    public function AfficherUserParCin(Request $request,UserRepository $userRepository, AuthenticationUtils $authenticationUtils): Response
     {
+        $lastUsername = $authenticationUtils->getLastUsername();
+        $user1=$this->userRepository->findOneByEmail($lastUsername);
         $cin = $request->query->get('cin1');
         if ($cin) {
             $recherche_par = $request->query->get('recherche_par');
@@ -232,15 +242,15 @@ class UserController extends AbstractController
             $user = [];
         }
         return $this->render('Admin/Admin.html.twig', [
-            'Users' => $user,
+            'Users' => $user,'nom'=>$user1->getNom()
         ]);
     }
     #[Route('/afficherAdmin', name: 'app_user.Afficher'),IsGranted('ROLE_ADMIN')]
-    public function AfficherUser(Request $request,UserRepository $userRepository): Response
+    public function AfficherUser(Request $request,UserRepository $userRepository, AuthenticationUtils $authenticationUtils): Response
     { $i=$userRepository->findAll();
-
-        return $this->render('Admin/Admin.html.twig', array(
-            "Users" => $i));
+        $lastUsername = $authenticationUtils->getLastUsername();
+        $user1=$this->userRepository->findOneByEmail($lastUsername);
+        return $this->render('Admin/Admin.html.twig',array('Users' => $i));
 
     }
     #[Route('/telecharger_pdf/{id_user}', name: 'telecharger_pdfuser')]

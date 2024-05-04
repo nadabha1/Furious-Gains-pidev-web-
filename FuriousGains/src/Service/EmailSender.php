@@ -22,7 +22,7 @@ class EmailSender
             ->from('nadabha135@gmail.com')
             ->to($to)
             ->subject($subject)
-            ->text($text);
+            ->html($text);
 
         // Send the email
         $mailer->send($email);

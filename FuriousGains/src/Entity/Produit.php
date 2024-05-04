@@ -28,7 +28,7 @@ class Produit
     )]
     #[Assert\Type(type: "numeric", message: "La quantité doit être un nombre entier positif")]
     private ?int $quantite;
-    
+
     #[ORM\Column(type: 'float')]
     #[Assert\NotBlank(message: "Le prix du produit ne doit pas être vide")]
     #[Assert\GreaterThan(value: 0, message: "Le prix du produit doit être supérieur à zéro")]
@@ -38,7 +38,7 @@ class Produit
     )]
     #[Assert\Type(type: "numeric", message: "Le prix du produit doit être un nombre positif")]
     private ?float $prix_produit;
-    
+
 
     #[ORM\Column(name:'description', length: 255)]
     #[Assert\NotBlank(message: "La description ne doit pas être vide !")]
@@ -60,8 +60,8 @@ class Produit
     #[ORM\Column(length: 255)]
     private ?string $image_name;
 
-    
-    
+
+
 
     public function getIdProduit(): ?int
     {
@@ -72,8 +72,6 @@ class Produit
     {
         $this->id_produit = $id_produit;
     }
-
-
 
     public function getMarqueProduit(): ?string
     {
@@ -125,7 +123,7 @@ class Produit
         $this->image_name = $image_name;
     }
 
-    public function getId_categorie(): ?Categorie
+    public function getIdCategorie(): ?Categorie
     {
         return $this->id_categorie;
     }

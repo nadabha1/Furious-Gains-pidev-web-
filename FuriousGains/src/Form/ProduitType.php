@@ -72,7 +72,7 @@ class ProduitType extends AbstractType
                         'maxMessage' => 'La id_categorie ne peut pas dépasser  caractères.',
                     ]),
                 ],
-            ])  
+            ])
          
             
             ->add('image_name', FileType::class, [

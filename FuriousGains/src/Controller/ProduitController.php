@@ -6,6 +6,7 @@ use App\Entity\Categorie;
 use App\Entity\Produit;
 use App\Form\ProduitType;
 use App\Repository\ProduitRepository;
+use App\Service\SmsSender;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,16 +40,21 @@ use Exception;
 use App\Service\EmailService;
 
 
+
 class ProduitController extends AbstractController
 {
     private $eventDispatcher;
+    private $smsSender;
 
 
-public function __construct(EventDispatcherInterface $eventDispatcher )
-{
-    $this->eventDispatcher = $eventDispatcher;
 
-}
+    public function __construct(EventDispatcherInterface $eventDispatcher,SmsSender $smsSender )
+    {
+        $this->eventDispatcher = $eventDispatcher;
+        $this->smsSender = $smsSender;
+
+
+    }
 
 
 
@@ -310,31 +316,41 @@ public function searchProduct(Request $request, ProduitRepository $produitReposi
             'qrImage' => $qrImage,
         ]);
     }
-    
+
     #[Route('/add-to-cart/{id}', name: 'add_to_cart')]
-    public function addToCart(ProduitRepository $produitRepository, SessionInterface $session, $id): Response
+
+    // Récupérer le produit à partir de son ID
+    public function addToCart(Request $request, EntityManagerInterface $entityManager, $id): Response
     {
-        // Récupérer le produit à partir de son ID
-        $produit = $produitRepository->find($id);
-        
+        // Récupérer le produit depuis la base de données
+        $produit = $entityManager->getRepository(Produit::class)->find($id);
+
         // Vérifier si le produit existe
         if (!$produit) {
-            throw $this->createNotFoundException('Produit non trouvé');
+            throw $this->createNotFoundException('Le produit n\'existe pas');
         }
 
-        // Récupérer le panier depuis la session ou initialiser un nouveau panier
-        $cart = $session->get('cart', []);
+        // Récupérer la quantité saisie par le client depuis le formulaire
+        $quantite = $request->request->get('quantity');
 
-        // Ajouter le produit au panier
-        $cart[] = [
-            'id' => $produit->getIdProduit(),
-            'nom' => $produit->getMarqueProduit(), // Par exemple, récupérez d'autres informations sur le produit nécessaires
-            'prix' => $produit->getPrixProduit(),
-            // Ajoutez d'autres informations sur le produit au besoin
-        ];
+        // Vérifier si la quantité en stock est suffisante
+        if ($quantite > $produit->getQuantite()) {
+            throw $this->createNotFoundException('La quantité demandée est supérieure à la quantité en stock');
+        }
 
-        // Mettre à jour le panier dans la session
-        $session->set('cart', $cart);
+        // Mettre à jour la quantité dans la base de données
+        $nouvelleQuantite = $produit->getQuantite() - $quantite;
+        $produit->setQuantite($nouvelleQuantite);
+
+        // Enregistrer les modifications dans la base de données
+        $entityManager->flush();
+        if ($nouvelleQuantite < 5) {
+            // Dispatch the low quantity event
+            $event = new ProductLowQuantityEvent($produit->getIdProduit(), $nouvelleQuantite);
+            $this->eventDispatcher->dispatch($event);
+        }
+        // Rediriger ou renvoyer une réponse appropriée
+
 
         // Rediriger vers une page appropriée, par exemple la page de détails du produit
         return $this->redirectToRoute('details_produit', ['id' => $id]);
@@ -396,7 +412,7 @@ public function searchProduct(Request $request, ProduitRepository $produitReposi
 
             $em->flush();
             // Envoyer une notification de succès
-          
+            $this->smsSender->sendSms('+21650545219', 'Bonjour, nous avons le plaisir de vous informer qu\'un nouveau produit a été ajouté à notre catalogue. Venez découvrir notre dernière collection sur notre site web. Merci pour votre confiance.');
 
     
            // return $this->redirectToRoute('addp');

@@ -64,10 +64,12 @@ class AuthController extends AbstractController
         if ( $this->isGranted("ROLE_ADMIN")) {
             return $this->redirectToRoute('app_user.Afficher');
 
-        } else if($this->isGranted("ROLE_USER")) {
+        }
+        if($this->isGranted("ROLE_USER")) {
             // Handle other cases or provide a default redirect
             return $this->redirectToRoute('homee');
-        }}
+        }
+        }
 
     }
     #[Route(path: '/logout', name: 'app_logout')]

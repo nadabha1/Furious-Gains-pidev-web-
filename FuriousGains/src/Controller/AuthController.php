@@ -5,11 +5,13 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Form\UserType;
+use App\Repository\ProduitRepository;
 use App\Repository\UserRepository;
 use App\Security\EmailVerifier;
 use App\Service\UploderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,13 +33,25 @@ class AuthController extends AbstractController
 
     }
     #[Route(path: '/login', name: 'app_login')]
-    public function login(AuthenticationUtils $authenticationUtils): Response
+    public function login(AuthenticationUtils $authenticationUtils,ProduitRepository $rep, PaginatorInterface $paginator, Request $request): Response
     {
+
+        $query = $rep->createQueryBuilder('p')
+            ->getQuery();
+
+        $produits = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            9
+        );
+
+        $categories = $rep->findAllCategories();
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error,"produits" => $produits,
+            "categories" => $categories]);
     }
     #[Route(path: '/login_check', name: 'login_check')]
     public function loginCheck(Request $request,AuthenticationUtils $authenticationUtils,UserRepository $userRepository )

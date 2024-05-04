@@ -1,0 +1,13 @@
+{% extends '/Dashboard.html.twig' %}
+
+{% block title %}Edit Avs{% endblock %}
+
+{% block container %}
+    <h1>Edit Avis</h1>
+
+    {{ include('avis/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_avis_indexAdmin') }}">back to list</a>
+
+    {{ include('avis/_delete_form.html.twig') }}
+{% endblock %}

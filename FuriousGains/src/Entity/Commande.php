@@ -24,8 +24,9 @@ class Commande
     #[Assert\Positive(message:"Le montant doit être positif")]
     private ?float $montantTotal;
 
-    #[ORM\ManyToOne(targetEntity: "Produit")]
-    private ?Produit $id_Produit;
+    #[ORM\ManyToOne(targetEntity: Produit::class)]
+    #[ORM\JoinColumn(name: "id_produit", referencedColumnName: "id_produit")]
+    private ?Produit $idProduit;
 
     public function getIdCommand(): ?int
     {

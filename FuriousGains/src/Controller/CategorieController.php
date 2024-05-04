@@ -21,10 +21,6 @@ use Symfony\Component\Notifier\NotifierInterface;
 
 class CategorieController extends AbstractController
 {
-
-
-
-
     #[Route('/addcategorie', name: 'addc')]
     public function add(NotifierInterface $notifier, ManagerRegistry $doctrine, Request $request): Response
     {

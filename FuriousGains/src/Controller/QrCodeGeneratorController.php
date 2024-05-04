@@ -1,7 +1,9 @@
 <?php
- 
+
 namespace App\Controller;
- 
+
+use App\Entity\Annonces;
+use App\Entity\Commande;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,53 +15,34 @@ use Endroid\QrCode\Label\Label;
 use Endroid\QrCode\Logo\Logo;
 use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Label\Font\NotoSans;
- 
+
 class QrCodeGeneratorController extends AbstractController
 {
     #[Route('/qr-codes', name: 'app_qr_codes')]
     public function index(): Response
     {
-        $writer = new PngWriter();
-        $qrCode = QrCode::create('https://www.binaryboxtuts.com/')
-            ->setEncoding(new Encoding('UTF-8'))
-            //->setErrorCorrectionLevel(new ErrorCorrectionLevelLow())
-            //->setSize(120)
-            //->setMargin(0)
-            ->setForegroundColor(new Color(0, 0, 0))
-            ->setBackgroundColor(new Color(255, 255, 255));
-        $logo = Logo::create('img/BIOT.png')
-            ->setResizeToWidth(60);
-        $label = Label::create('')->setFont(new NotoSans(8));
- 
+        // Récupérer le montant et le statut de la table "commande"
+        $entityManager = $this->getDoctrine()->getManager();
+        $annonce = $entityManager->getRepository(Annonces::class)->findOneBy([]); // Modifier les critères de recherche selon vos besoins
+
+        // Vérifier si une commande a été trouvée
+        if ($annonce) {
+            $titreAnnonces = $annonce->getTitreAnnonces();
+            $descriptionAnnonces  = $annonce->getDescriptionAnnonces();
+        } else {
+            // Gérer le cas où aucune commande n'est trouvée
+            $titreAnnonces = 'titre inconnu';
+            $descriptionAnnonces  = 'description inconnu';
+        }
+
+        // Le reste du code reste inchangé
+
         $qrCodes = [];
-        $qrCodes['img'] = $writer->write($qrCode, $logo)->getDataUri();
-        $qrCodes['simple'] = $writer->write(
-                                $qrCode,
-                                null,
-                                $label->setText('Simple')
-                            )->getDataUri();
- 
-        $qrCode->setForegroundColor(new Color(255, 0, 0));
-        $qrCodes['changeColor'] = $writer->write(
-            $qrCode,
-            null,
-            $label->setText('Color Change')
-        )->getDataUri();
- 
-        $qrCode->setForegroundColor(new Color(0, 0, 0))->setBackgroundColor(new Color(255, 0, 0));
-        $qrCodes['changeBgColor'] = $writer->write(
-            $qrCode,
-            null,
-            $label->setText('Background Color Change')
-        )->getDataUri();
- 
-        $qrCode->setSize(200)->setForegroundColor(new Color(0, 0, 0))->setBackgroundColor(new Color(255, 255, 255));
-        $qrCodes['withImage'] = $writer->write(
-            $qrCode,
-            $logo,
-            $label->setText('With Image')->setFont(new NotoSans(20))
-        )->getDataUri();
- 
-        return $this->render('qr_code_generator/index.html.twig', $qrCodes);
+        $qrCodes['titre'] =$titreAnnonces; // Ajouter le montant à l'array $qrCodes
+        $qrCodes['description'] = $descriptionAnnonces; // Ajouter le statut à l'array $qrCodes
+
+        return $this->render('qr_code_generator/index.html.twig', [$qrCodes,'commande' => $annonce]);
+
     }
+
 }

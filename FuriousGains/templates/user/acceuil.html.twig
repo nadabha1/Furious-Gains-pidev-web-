@@ -26,7 +26,7 @@
                         <a href="single.html" class="dropdown-item">Recette</a>
                     </div>
                 </div>
-                 <div class="nav-item dropdown">
+                <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Blog</a>
                     <div class="dropdown-menu text-capitalize">
                         <a href="{{path('app_avis_index')}}" class="dropdown-item">Avis</a>
@@ -67,7 +67,7 @@
                         <label for="reg-log"></label>
                         <div class="card-3d-wrap mx-auto">
                             <div class="card-3d-wrapper">
-                                <form class="card-front " method="POST" action={{ path('login')}} >
+                                <form class="card-front " method="POST">
                                     <div class="center-wrap">
                                         <div class="section">
                                             <h4 class="h4login mb-4 pb-3">Log In</h4>
@@ -89,70 +89,7 @@
                                     </div>
                                 </form>
                                 <!-- HERE ================================================================================================================================= -->
-                                <form class="card-back " method="POST"  enctype="multipart/form-data"                     >
-                                    {{form_start(formUser,{'attr': {'novalidate': 'novalidate'}})}}
-                                    <div class="form  form-active  ">
-                                        <h4 class="pb-3">Sign Up</h4>
-                                        <a href="#" id="closebtn-signup"><i class="icon-close uil uil-times-circle"></i></a>
 
-                                        <div class="form-group ">
-                                            {{ form_widget(formUser.cin) }}
-                                            {{ form_errors(formUser.cin) }}
-                                            <i class="input-icon uil uil-user"></i>
-                                        </div>
-                                        <div class="form-group ">
-                                            {{ form_widget(formUser.nom) }}
-                                            <i class="input-icon uil uil-user"></i>
-                                        </div>
-                                        <div class="form-group ">
-                                            {{ form_widget(formUser.prenom) }}
-                                            <i class="input-icon uil uil-user"></i>
-                                        </div>
-                                        <div class="form-group mt-2">
-                                            {{ form_widget( formUser.email) }}
-                                            <i class="input-icon uil uil-at"></i>
-                                        </div>
-
-                                        <div class="form-group mt-2">
-                                            {{ form_widget( formUser.password) }}
-                                            <i class="input-icon uil uil-lock-alt"></i>
-                                        </div>
-                                        <div class="form-group mt-2">
-                                            {{ form_widget( formUser.dateuser) }}
-                                            <i class="input-icon uil uil-calendar-alt"></i>
-                                        </div>
-                                        <button class="form__btn" id="btn-1">Next</button>
-                                    </div>
-                                    <div class="form  ">
-                                        <h4 class="pb-3">Sign Up</h4>
-                                        <a href="#" id="closebtn-signup"><i class="icon-close uil uil-times-circle"></i></a>
-                                        <div class="form-group mt-2">
-                                            {{ form_widget( formUser.numTel) }}
-
-                                            <i class="input-icon uil uil-lock-alt"></i>
-                                        </div>
-                                        <div class="form-group mt-2">
-                                            {{ form_widget( formUser.adresse) }}
-                                            {{ form_errors( formUser.adresse) }}
-                                            <i class="input-icon uil uil-lock-alt"></i>
-                                        </div>
-                                        <div class="form-group mt-2">
-                                            <div class="form-floating">
-                                                {{ form_row(formUser.roles) }}
-                                            </div>
-                                        </div>
-                                        <div class="form-group mt-2">
-                                            {{ form_widget( formUser.image) }}
-                                            {{ form_errors( formUser.image) }}
-                                            <i class="input-icon uil uil-calendar-alt"></i>
-                                        </div>
-                                        <button class="form__btn" id="btn-3-prev">Previous</button>
-                                        <button class="form__btn invis" id="btn-3"></button>
-                                        {{ form_widget( formUser.Ajouter) }}
-
-                                    </div>
-                                    {{form_end(formUser)}}
-                                </form>
                             </div>
                         </div>
                     </div>

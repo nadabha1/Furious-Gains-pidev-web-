@@ -98,6 +98,10 @@ class User implements UserInterface,  PasswordAuthenticatedUserInterface
     {
         $this->id_user = $id_user;
     }
+    /*  #[ORM\ManyToOne(targetEntity: Codepromo::class,inversedBy: 'Users')]
+      private ?Codepromo $codepromo = null;*/
+
+ 
 
     public function getCin(): ?int
     {

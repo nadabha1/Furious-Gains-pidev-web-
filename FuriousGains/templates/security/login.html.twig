@@ -37,6 +37,112 @@
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 {% endblock %}
+    {% block class%}
+    {% endblock %}
+    {%block about %}
+    {% endblock %}
+
+{% block features %}
+
+{% endblock %}
+    {%block gymf%}
+
+        <div class="row pt-12">
+            <div class="col-lg-6">
+                <form action="{{ path('search_product') }}" method="GET" class="d-flex">
+                    <input type="text" name="keyword" class="form-control me-2" placeholder="Rechercher un produit...">
+                    <button type="submit" class="btn btn-primary">Rechercher</button>
+                </form>
+            </div>
+            <div class="col-lg-6">
+                <form action="{{ path('search_product') }}" method="GET" class="d-flex align-items-center">
+                    <label for="priceRange" class="form-label me-2">Sélectionnez la plage de prix en DT:</label>
+                    <input type="range" name="minPrice" id="minPrice" class="form-range me-2" min="0" max="500" step="10" value="{{ app.request.query.get('minPrice') ?? '0' }}">
+                    <input type="range" name="maxPrice" id="maxPrice" class="form-range me-2" min="0" max="500" step="10" value="{{ app.request.query.get('maxPrice') ?? '500' }}">
+                    <span id="minPriceLabel" class="me-2">{{ app.request.query.get('minPrice') ?? '0' }}</span>
+                    <span>  </span>
+                    <span id="maxPriceLabel" class="me-2">{{ app.request.query.get('maxPrice') ?? '500' }}</span>
+                    <button type="submit" class="btn btn-primary">Filtrer</button>
+                </form>
+            </div>
+
+            <script>
+                const minPrice = document.getElementById('minPrice');
+                const maxPrice = document.getElementById('maxPrice');
+                const minPriceLabel = document.getElementById('minPriceLabel');
+                const maxPriceLabel = document.getElementById('maxPriceLabel');
+
+                // Met à jour les valeurs de prix affichées lorsque l'utilisateur modifie les curseurs
+                minPrice.addEventListener('input', function() {
+                    minPriceLabel.textContent = this.value;
+                });
+
+                maxPrice.addEventListener('input', function() {
+                    maxPriceLabel.textContent = this.value;
+                });
+            </script>
+
+        </div>
+        <div class="row">
+            {% for produit in produits %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card custom-card" style="background-color: white;">
+                        <a href="{{ path('details_produit', {'id': produit.getIdProduit()}) }}" class="card-link">
+                            <div class="card-body text-center">
+                                <h5 class="card-text">{{ produit.getMarqueProduit() }}</h5>
+
+                                <img src="{{ asset('img/' ~ produit.getImageName()) }}" class="card-img-top img-product" alt="Product Image">
+                                <p class="card-text">Price: {{ produit.getPrixProduit() }} TD </p>
+                                <a href="{{ path('details_produit', {'id': produit.getIdProduit()}) }}" class="btn btn-primary">Ajouter au panier</a>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col">
+                    <p>No products found!</p>
+                </div>
+            {% endfor %}
+        </div>
+
+        {# Pagination #}
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                {{ knp_pagination_render(produits) }}
+            </div>
+        </div>
+
+        <script src="{{ asset('js/core/jquery.min.js') }}"></script>
+        <script src="{{ asset('js/core/popper.min.js') }}"></script>
+        <script src="{{ asset('js/core/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('js/plugins/perfect-scrollbar.jquery.min.js') }}"></script>
+        <!-- Google Maps Plugin -->
+        <!-- Place this tag in your head or just before your close body tag. -->
+        <script src="{{ asset('https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE') }}"></script>
+        <!-- Chart JS -->
+        <script src="{{ asset('js/plugins/chartjs.min.js') }}"></script>
+        <!-- Notifications Plugin -->
+        <script src="{{ asset('js/plugins/bootstrap-notify.js') }}"></script>
+        <!-- Control Center for Black Dashboard: parallax effects, scripts for the example pages etc -->
+        <script src="{{ asset('js/black-dashboard.min.js?v=1.0.0') }}"></script>
+        <!-- Black Dashboard DEMO methods, don't include it in your project! -->
+        <script src="{{ asset('demo/demo.js') }}"></script>
+    {% endblock %}
+
+    {%block subscribe%}
+    {% endblock %}
+
+    {%block cal%}
+
+    {% endblock %}
+
+    {%block t%}
+    {% endblock %}
+
+    {%block blog%}
+    {% endblock %}
+
+
 {% block login%}
     <!-- Inclure les fichiers CSS -->
 

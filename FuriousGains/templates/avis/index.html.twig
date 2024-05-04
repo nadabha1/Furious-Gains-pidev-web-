@@ -1,8 +1,77 @@
-{% extends 'base.html.twig' %}
+{% extends 'contact.html.twig' %}
+{% block bar  %}
+    <link rel="apple-touch-icon" sizes="76x76" href="img/apple-icon.png">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <title>
+        Black Dashboard by Creative Tim
+    </title>
+    <!--     Fonts and icons     -->
+    <link href="{{ asset('https://fonts.googleapis.com/css?family=Poppins:200,300,400,600,700,800') }}" rel="stylesheet" />
+    <link href="{{ asset('https://use.fontawesome.com/releases/v5.0.6/css/all.css') }}" rel="stylesheet">
+    <!-- Nucleo Icons -->
+    <link href="{{ asset('css/nucleo-icons.css') }}" rel="stylesheet" />
+    <!-- CSS Files -->
+    <link href="{{ asset('css/black-dashboard.css?v=1.0.0') }}" rel="stylesheet" />
+    <!-- CSS Just for demo purpose, don't include it in your project -->
+    <link href="{{ asset('demo/demo.css') }}" rel="stylesheet" />
+    <nav class="navbar navbar-expand-lg bg-none navbar-dark py-3">
+        <a href="" class="navbar-brand">
+            <img class="w-25"  src="{{ asset ('img/logo2.png')}}" alt="Image">
+        </a>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
+            <div class="navbar-nav ml-auto p-4 bg-secondary">
+                <a href="{{path('homee')}}" class="nav-item nav-link ">Home</a>
+                <a href="{{asset('../feature.html.twig')}}" class="nav-item nav-link">Produit</a>
+                <a href="class.html" class="nav-item nav-link">Evenement</a>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle active" data-toggle="dropdown">Livraisons</a>
+                    <div class="dropdown-menu text-capitalize">
+                        <a href="{{path('app_livraison_index')}}" class="dropdown-item">vos Livraisons</a>
+                        <a href="{{path('app_commande_index')}}" class="dropdown-item"> vos Commandes</a>
+                    </div>
+                </div>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle " data-toggle="dropdown">Nutritioin</a>
+                    <div class="dropdown-menu text-capitalize">
+                        <a href="blog.html" class="dropdown-item">Regime</a>
+                        <a href="single.html" class="dropdown-item">Recette</a>
+                    </div>
+                </div>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Blog</a>
+                    <div class="dropdown-menu text-capitalize">
+                        <a href="{{path('app_avis_index')}}" class="dropdown-item">Avis</a>
+                        <a href="{{path('app_annonces_index')}}" class="dropdown-item">Annonces</a>
+                    </div>
+                </div>
+                <a href="{{path('readUser')}}" class="nav-item nav-link">Profil</a>
+            </div>
+        </div>
+    </nav>
+    {% for flashMessage in app.session.flashBag.get('error') %}
+        <div class="alert alert-danger">
+            {{ flashMessage }}
+        </div>
+    {% endfor %}
+{% endblock %}
+  {% block pageheader %}
 
-{% block title %}Avis index{% endblock %}
+      <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 400px">
+          <h4 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase font-weight-bold">Avis</h4>
+          <div class="d-inline-flex">
+              <p class="m-0 text-white"><a class="text-white" href="{{path('app_avis_index')}}" >Avis</a></p>
+              <p class="m-0 text-white px-2">/</p>
+              <p class="m-0 text-white">Afficher Avis</p>
+          </div>
+      </div>
+  {% endblock %}
 
-{% block class %}
+{% block container %}
+{% endblock %}
+{% block features %}
     <h1>Avis index</h1>
 <h1 class="titre-rouge text-center">Recherche des avis par note</h1>
             <form action="{{ path('search_avis') }}" method="GET" class=" form-petit text-center">

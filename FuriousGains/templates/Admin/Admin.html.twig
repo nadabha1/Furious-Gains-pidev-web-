@@ -101,8 +101,7 @@
 
                                     <a href="{{ path('app_user.Supprimer', {'id': objet.id_user}) }}" class="btn btn-danger btn-sm">Supprimer</a>
                                     <a href="{{ path('app_user.Modifier', {'id': objet.id_user}) }}" class="btn btn-primary btn-sm">Modifier</a>
-                                    <a href="{{ path('telecharger_pdf', {'id_user': objet.id_user}) }}" class="btn btn-primary">Télécharger PDF</a>
-                                    <li class="breadcrumb-item"><a href="{{ path('indexq') }}" class="btn btn-primary">Generate qr for any event</a></li>
+                                    <a href="{{ path('telecharger_pdfuser', {'id_user': objet.id_user}) }}" class="btn btn-primary">Télécharger PDF</a>
                                 </td>
                                 <td>
                                 <div class="qrcode-container" data-reference="Information sur compte:

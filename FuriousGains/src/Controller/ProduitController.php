@@ -6,6 +6,7 @@ use App\Entity\Categorie;
 use App\Entity\Produit;
 use App\Form\ProduitType;
 use App\Repository\ProduitRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -76,7 +77,7 @@ public function __construct(EventDispatcherInterface $eventDispatcher )
             "categories" => $categories,
         ]);
     }
-    #[Route('/readp', name: 'readBack')]
+    #[Route('/readp', name: 'readBack'),IsGranted('ROLE_ADMIN')]
 public function readB(ProduitRepository $rep): Response
 {
     $produits = $rep->findAll();
@@ -86,7 +87,7 @@ public function readB(ProduitRepository $rep): Response
     ]);
 }
 
-#[Route('/produit/{id}/supprimer', name: 'supprimer_produit')]
+#[Route('/produit/{id}/supprimer', name: 'supprimer_produit'),IsGranted('ROLE_ADMIN')]
 public function supprimerProduit(Produit $produit, EntityManagerInterface $entityManager): Response
 {
     // Vérifie si le produit existe
@@ -177,7 +178,7 @@ public function modifierProduit(Produit $produit, Request $request, EntityManage
 
 
 
-#[Route('/search/products', name: 'search_products')]
+#[Route('/search/products', name: 'search_products'),IsGranted('ROLE_ADMIN')]
 public function searchProducts(Request $request, ProduitRepository $produitRepository): Response
 {
     $keyword = $request->query->get('keyword');
@@ -274,7 +275,7 @@ public function searchProduct(Request $request, ProduitRepository $produitReposi
         ]);
     }
  
-    #[Route('/prod/{id}', name: 'detailBack')]
+    #[Route('/prod/{id}', name: 'detailBack'),IsGranted('ROLE_ADMIN'),IsGranted('ROLE_ADMIN')]
     public function showBack(ProduitRepository $produitRepository,Request $request, $id): Response
     {
         $produit = $produitRepository->find($id);

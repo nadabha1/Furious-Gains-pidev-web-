@@ -6,7 +6,7 @@ use App\Entity\Avis;
 use App\Form\AvisType;
 use App\Repository\AvisRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use PHPMailer\PHPMailer\Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -134,6 +134,90 @@ class AvisController extends AbstractController
         $avis = $AvisRepository->findByKeywordQuery($keyword);
 
         return $this->render('avis/index.html.twig', [
+            'avis' => $avis,
+        ]);
+    }
+
+
+    ///////////////////////admin
+    ///
+
+
+    #[Route('/adminavis/', name: 'app_avis_indexAdmin', methods: ['GET']),IsGranted('ROLE_ADMIN')]
+    public function AdminList(EntityManagerInterface $entityManager,AvisRepository $avisRepository): Response
+    {
+        $avis = $avisRepository->findAll();
+
+        return $this->render('avis/indexAdmin.html.twig', [
+            'avis' => $avis,
+        ]);
+    }
+
+    #[Route('/newAdmin', name: 'app_avis_newAdmin', methods: ['GET', 'POST']),IsGranted('ROLE_ADMIN')]
+    public function newAdmin(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $avi = new Avis();
+
+        $form = $this->createForm(AvisType::class, $avi);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($avi);
+            $this->addFlash('success', 'Avis ajouté avec succès.');
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_avis_newAdmin', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('avis/newAdmin.html.twig', [
+            'avi' => $avi,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/Admin/{idAvis}', name: 'app_avis_showAdmin', methods: ['GET']),IsGranted('ROLE_ADMIN')]
+    public function showAdmin(Avis $avi): Response
+    {
+        return $this->render('avis/showAdmin.html.twig', [
+            'avi' => $avi,
+        ]);
+    }
+
+    #[Route('/Admin/{idAvis}/editAdmin', name: 'app_avis_editAdmin', methods: ['GET', 'POST']),IsGranted('ROLE_ADMIN')]
+    public function editAdmin(Request $request, Avis $avi, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(AvisType::class, $avi);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_avis_indexAdmin', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('avis/editAdmin.html.twig', [
+            'avi' => $avi,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/Admind/{idAvis}', name: 'app_avis_deleteAdmin', methods: ['POST']),IsGranted('ROLE_ADMIN')]
+    public function deleteAdmin(Request $request, Avis $avi, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$avi->getIdAvis(), $request->request->get('_token'))) {
+            $entityManager->remove($avi);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_avis_indexAdmin', [], Response::HTTP_SEE_OTHER);
+    }
+    #[Route('/search/avis', name: 'search_avisAdmin'),IsGranted('ROLE_ADMIN')]
+    public function searchAvisAdmin(Request $request, AvisRepository $AvisRepository): Response
+    {
+        $keyword = $request->query->get('keyword');
+        $avis = $AvisRepository->findByKeywordQuery($keyword);
+
+        return $this->render('avis/indexAdmin.html.twig', [
             'avis' => $avis,
         ]);
     }

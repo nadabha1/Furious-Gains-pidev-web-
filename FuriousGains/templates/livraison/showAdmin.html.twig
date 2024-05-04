@@ -94,7 +94,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link  " href="{{ path('app_livraison_indexAmin') }}">
+                    <a class="nav-link  active" href="{{ path('app_livraison_indexAmin') }}">
                         <div class="material-symbols-outlined icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <span class="material-symbols-outlined">emoji_transportation</span>
 
@@ -103,14 +103,22 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="{{ path('app_commande_list') }}">
+                    <a class="nav-link" href="{{ path('app_commande_list') }}">
                         <div class="material-symbols-outlined icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-4 d-flex align-items-center justify-content-center">
                             <i class="material-icons" style="color: black; font-size: 24px; position: relative; top: 2px;">shopping_cart</i>
                         </div>
                         <span class="nav-link-text ms-1">Commandes</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link  " href="{{ path('app_commande_list') }}">
+                        <div class="material-symbols-outlined icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <span class="material-symbols-outlined">emoji_transportation</span>
 
+                        </div>
+                        <span class="nav-link-text ms-1">Commandes</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link  " href="../pages/rtl.html">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -201,12 +209,59 @@
         </div>
     </aside>
 {% endblock  %}
-{% block title %}New Commande{% endblock %}
+{% block title %}Livraisons{% endblock %}
 
 {% block container %}
-    <h1>Create new Commande</h1>
+  {% block pageheader %}
 
-    {{ include('commande/_form.html.twig') }}
+      <div class="d-flex flex-column align-items-center justify-content-center pt-0 pt-lg-5" style="min-height: 400px">
+          <h4 class="display-4 mb-3 mt-0 mt-lg-5 text-white text-uppercase font-weight-bold">Livraison</h4>
+          <div class="d-inline-flex">
+              <p class="m-0 text-white"><a class="text-white" href="{{path('app_livraison_indexAmin')}}" >Home</a></p>
+              <p class="m-0 text-white px-2">/</p>
+              <p class="m-0 text-white"> Livraison</p>
+          </div>
+      </div>
+  {% endblock %}
 
-    <a href="{{ path('app_commande_list') }}">back to list</a>
+{% block title %}Livraison{% endblock %}
+{% block container %}
+{% endblock %}
+{% block features %}
+    <h1>Livraison</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>IdLivraison</th>
+                <td>{{ livraison.idLivraison }}</td>
+            </tr>
+            <tr>
+                <th>DateLivraison</th>
+                <td>{{ livraison.dateLivraison ? livraison.dateLivraison|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>StatutLivraison</th>
+                <td>{{ livraison.statutLivraison }}</td>
+            </tr>
+            <tr>
+                <th>AdresseLivraison</th>
+                <td>{{ livraison.adresseLivraison }}</td>
+            </tr>
+            <tr>
+                <th>MontantPaiement</th>
+                <td>{{ livraison.montantPaiement }}</td>
+            </tr>
+            <tr>
+                <th>ModeLivraison</th>
+                <td>{{ livraison.modeLivraison }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_livraison_indexAmin') }}">back to list</a>
+
+    <a href="{{ path('app_livraison_editAdmin', {'idLivraison': livraison.idLivraison}) }}">edit</a>
+
+    {{ include('livraison/_delete_form.html.twig') }}
 {% endblock %}

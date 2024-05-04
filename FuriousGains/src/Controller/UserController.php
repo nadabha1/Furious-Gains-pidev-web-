@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Controller;
-use App\Services\EmailSender;
 use League\Csv\CannotInsertRecord;
 use League\Csv\Exception;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -46,13 +45,7 @@ class UserController extends AbstractController
         return $this->redirectToRoute('Admin');
 
     }
-    #[Route('/user', name: 'app_user'),IsGranted('ROLE_ADMIN')]
-    public function index(): Response
-    {
-        return $this->render('Admin/test.html.twig', [
-            'name' => 'UserController',
-        ]);
-    }
+
     #[Route('/{iduser}/edit', name: 'editt', methods: ['GET', 'POST'])]
     public function edit(Request $request,UserRepository $repo,$iduser, EntityManagerInterface $entityManager): Response
     { $user = $repo->findOneBy(['id_user' => $iduser]);
@@ -77,28 +70,28 @@ class UserController extends AbstractController
         ]);
     }
     #[Route('/readUser', name: 'readUser', methods: ['GET', 'POST'])]
-    public function readUser(UserRepository $repo,EntityManagerInterface $manager, Request $request, $iduser,AuthenticationUtils $authenticationUtils): Response
+    public function readUser(UserRepository $repo,EntityManagerInterface $manager, Request $request, AuthenticationUtils $authenticationUtils): Response
     {
         $lastUsername = $authenticationUtils->getLastUsername();
         $user=$this->userRepository->findOneByEmail($lastUsername);
-            $form=$this->createForm(UserType::class,$user);
-            $form->remove('token');
-            $form->remove('image');
-            $form->remove('password');
-            $form->handleRequest($request);
-            if($form->isSubmitted()&& $form->isValid()){
-                $em=$this->managerRegistry->getManager();
-                $em->persist($user);
-                $em->flush();
-                return $this->renderForm('user/AfficherUser.html.twig', [
-                    'form' => $form->createView(),
-                    'User' => $user,
-                    'iduser' => $iduser
-                ]);            }
+        $form=$this->createForm(UserType::class,$user);
+        $form->remove('token');
+        $form->remove('image');
+        $form->remove('password');
+        $form->handleRequest($request);
+        if($form->isSubmitted()&& $form->isValid()){
+            $em=$this->managerRegistry->getManager();
+            $em->persist($user);
+            $em->flush();
+            return $this->renderForm('user/AfficherUser.html.twig', [
+                'form' => $form->createView(),
+                'User' => $user,
+                'iduser' => $user->getId_user()
+            ]);            }
         return $this->render('user/AfficherUser.html.twig', [
             'form' => $form->createView(),
             'User' => $user,
-            ['iduser' => $iduser]
+            ['iduser' => $user->getId_user()]
         ]);
 
     }
@@ -170,18 +163,18 @@ class UserController extends AbstractController
             $user->setImage($newFilename);
 
             $em=$manager->getManager();
-        //7
+            //7
             $passwordcrybt = password_hash($user->getPassword(), PASSWORD_BCRYPT);
-        $user->setPassword($passwordcrybt);
-        $em->persist($user);
-        $em->flush();
-        //8
-       return $this->redirectToRoute('homee'); }
-       return $this->renderForm('user/acceuil.html.twig',['formUser'=>$form]);
-      
+            $user->setPassword($passwordcrybt);
+            $em->persist($user);
+            $em->flush();
+            //8
+            return $this->redirectToRoute('homee'); }
+        return $this->renderForm('user/acceuil.html.twig',['formUser'=>$form]);
+
     }
 
-    
+
 
     #[Route('/ajout', name: 'app_user.Ajout'),IsGranted('ROLE_ADMIN')]
     public function AjouterUser(Request $request,UserPasswordHasherInterface $userPasswordHasher): Response
@@ -250,7 +243,7 @@ class UserController extends AbstractController
             "Users" => $i));
 
     }
-    #[Route('/telecharger_pdf/{id_user}', name: 'telecharger_pdf')]
+    #[Route('/telecharger_pdf/{id_user}', name: 'telecharger_pdfuser')]
     public function telechargerPdf(Request $request, int $id_user,UserRepository $userRepository): Response
     {
         // Récupérer le user depuis la base de usernées (ou tout autre moyen)

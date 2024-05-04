@@ -7,6 +7,7 @@ use App\Form\Livraison1Type;
 use App\Repository\LivraisonRepository;
 use App\Service\EmailSender;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,6 +32,78 @@ class LivraisonController extends AbstractController
         //$this->texter = $texter;
 
     }
+    #[Route('/listeAdmin/', name: 'app_livraison_indexAmin', methods: ['GET']),IsGranted('ROLE_ADMIN')]
+    public function listeAdmin(EntityManagerInterface $entityManager): Response
+    {
+        $livraisons = $entityManager
+            ->getRepository(Livraison::class)
+            ->findAll();
+
+        return $this->render('livraison/indexAdmin.html.twig', [
+            'livraisons' => $livraisons,
+        ]);
+    }
+
+    #[Route('/newA', name: 'app_livraison_new', methods: ['GET', 'POST']),IsGranted('ROLE_ADMIN')]
+    public function newAdmin(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $livraison = new Livraison();
+        $form = $this->createForm(Livraison1Type::class, $livraison);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($livraison);
+            $this->addFlash('success', 'Livraison ajouté avec succès.');
+            $entityManager->flush();
+            $email=new EmailSender();
+            $email->sendEmail("nour.msaddek@esprit.tn ","Nouvelle livraison ","Livraison ajoutée avec succes ");
+            $this->smsSender->sendSms('+21621174221', 'Bonjour,votre livraison a été ajoutée avec succées. Merci pour votre confiance.');
+            return $this->redirectToRoute('app_livraison_new', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('livraison/newAdmin.html.twig', [
+            'livraison' => $livraison,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/AdminLiv/{idLivraison}', name: 'app_livraison_showAdmin', methods: ['GET']),IsGranted('ROLE_ADMIN')]
+    public function showAdmin(Livraison $livraison): Response
+    {
+        return $this->render('livraison/showAdmin.html.twig', [
+            'livraison' => $livraison,
+        ]);
+    }
+
+    #[Route('/AdminLiv/{idLivraison}/edit', name: 'app_livraison_editAdmin', methods: ['GET', 'POST']),IsGranted('ROLE_ADMIN')]
+    public function editAdmin(Request $request, Livraison $livraison, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(Livraison1Type::class, $livraison);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_livraison_indexAmin', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('livraison/editAdmin.html.twig', [
+            'livraison' => $livraison,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/AdminLiv/{idLivraison}', name: 'app_livraison_deleteAdmin', methods: ['POST']),IsGranted('ROLE_ADMIN')]
+    public function deleteAdmin(Request $request, Livraison $livraison, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$livraison->getIdLivraison(), $request->request->get('_token'))) {
+            $entityManager->remove($livraison);
+            $entityManager->flush();
+        }
+
+        return $this->redirectToRoute('app_livraison_indexAmin', [], Response::HTTP_SEE_OTHER);
+    }
+
     #[Route('/', name: 'app_livraison_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -142,18 +215,35 @@ class LivraisonController extends AbstractController
         // Envoyer la réponse pour télécharger le fichier PDF
         return $response;
     }
+    #[Route('/searchAdmin/livraison', name: 'search_livraisonadmin'),IsGranted('ROLE_ADMIN')]
+    public function searchProductsAdmin(Request $request, LivraisonRepository $livraisonRepository): Response
+    {  $livraisons = $livraisonRepository->findAll();
+        $cin = $request->query->get('livraison');
+        if ($cin) {
+            $recherche_par = $request->query->get('recherche_par');
+            switch ($recherche_par) {
+                case 'statutLivraison':
+                    $livraisons = $livraisonRepository->findByKeywordQuery($cin);
+                    break;
+                case 'adresse':
+                    $livraisons = $livraisonRepository->findOneByadresse($cin);
+                    break;
+                default:
+                    $livraisons = [];
+            }
+        } else {
+            $livraisons = [];
+        }
+
+
+        return $this->render('livraison/indexAdmin.html.twig', [
+            'livraisons' => $livraisons,
+        ]);
+
+    }
     #[Route('/search/livraison', name: 'search_livraison')]
     public function searchProducts(Request $request, LivraisonRepository $livraisonRepository): Response
-    {
-        /*$keyword = $request->query->get('keyword');
-
-        // Recherche des produits correspondant au mot-clé
-        $livraisons = $livraisonRepository->findByKeywordQuery($keyword);
-
-        return $this->render('livraison/index.html.twig', [
-            'livraisons' => $livraisons,
-        ]);*/
-        $cin = $request->query->get('livraison');
+    {$cin = $request->query->get('livraison');
         if ($cin) {
             $recherche_par = $request->query->get('recherche_par');
             switch ($recherche_par) {

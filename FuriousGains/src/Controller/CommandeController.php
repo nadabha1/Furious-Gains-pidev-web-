@@ -5,27 +5,36 @@ namespace App\Controller;
 use App\Entity\Commande;
 use App\Form\CommandeType;
 use App\Repository\CommandeRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Endroid\QrCode\QrCode;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+
 #[Route('/commande')]
 class CommandeController extends AbstractController
 {
     #[Route('/', name: 'app_commande_index', methods: ['GET'])]
-    public function index(EntityManagerInterface $entityManager): Response
+
+    public function index(EntityManagerInterface $entityManager,UserRepository $repo, AuthenticationUtils $authenticationUtils): Response
     {
-        $commandes = $entityManager
+        $lastUsername = $authenticationUtils->getLastUsername();
+        $user=$repo->findOneByEmail($lastUsername);
+
+        $commandes= $entityManager
             ->getRepository(Commande::class)
-            ->findAll();
+            ->findBy(['id_client'=>$user->getId_user()]);
 
         return $this->render('commande/index.html.twig', [
             'commandes' => $commandes,
         ]);
     }
-    #[Route('/adminlist/', name: 'app_commande_list', methods: ['GET'])]
+
+    #[Route('/adminlist/', name: 'app_commande_list', methods: ['GET']),IsGranted('ROLE_ADMIN')]
     public function list(EntityManagerInterface $entityManager): Response
     {
         $commandes = $entityManager
@@ -95,7 +104,7 @@ class CommandeController extends AbstractController
     }
 
 
-    #[Route('/adminnew', name: 'app_commande_newAdmin', methods: ['GET', 'POST'])]
+    #[Route('/adminnew', name: 'app_commande_newAdmin', methods: ['GET', 'POST']),IsGranted('ROLE_ADMIN')]
     public function newAdmin(Request $request, EntityManagerInterface $entityManager): Response
     {
         $commande = new Commande();
@@ -115,7 +124,7 @@ class CommandeController extends AbstractController
         ]);
     }
 
-    #[Route('/adminshow/{idCommand}', name: 'app_commande_showAdmin', methods: ['GET'])]
+    #[Route('/adminshow/{idCommand}', name: 'app_commande_showAdmin', methods: ['GET']),IsGranted('ROLE_ADMIN')]
     public function showAdmin(CommandeRepository $repo,$idCommand): Response
     { $commande =$repo->find($idCommand);
         return $this->render('commande/showAdmin.html.twig', [
@@ -123,7 +132,7 @@ class CommandeController extends AbstractController
         ]);
     }
 
-    #[Route('/{idCommand}/editadmin', name: 'app_commande_editAdmin', methods: ['GET', 'POST'])]
+    #[Route('/{idCommand}/editadmin', name: 'app_commande_editAdmin', methods: ['GET', 'POST']),IsGranted('ROLE_ADMIN')]
     public function editAdmin(Request $request,CommandeRepository $repo,$idCommand,  EntityManagerInterface $entityManager): Response
     {  $commande =$repo->find($idCommand);
         $form = $this->createForm(CommandeType::class, $commande);
@@ -141,7 +150,7 @@ class CommandeController extends AbstractController
         ]);
     }
 
-    #[Route('/admindelite/{idCommand}', name: 'app_commande_deleteAdmin', methods: ['POST'])]
+    #[Route('/admindelite/{idCommand}', name: 'app_commande_deleteAdmin', methods: ['POST']),IsGranted('ROLE_ADMIN')]
     public function deleteAdmin(Request $request,CommandeRepository $repo,$idCommand, EntityManagerInterface $entityManager): Response
     { $commande =$repo->find($idCommand);
         if ($this->isCsrfTokenValid('delete'.$commande->getIdCommand(), $request->request->get('_token'))) {

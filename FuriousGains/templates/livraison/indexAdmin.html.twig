@@ -94,7 +94,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link  " href="{{ path('app_livraison_indexAmin') }}">
+                    <a class="nav-link  active" href="{{ path('app_livraison_indexAmin') }}">
                         <div class="material-symbols-outlined icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
                             <span class="material-symbols-outlined">emoji_transportation</span>
 
@@ -103,14 +103,22 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="{{ path('app_commande_list') }}">
+                    <a class="nav-link" href="{{ path('app_commande_list') }}">
                         <div class="material-symbols-outlined icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-4 d-flex align-items-center justify-content-center">
                             <i class="material-icons" style="color: black; font-size: 24px; position: relative; top: 2px;">shopping_cart</i>
                         </div>
                         <span class="nav-link-text ms-1">Commandes</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link  " href="{{ path('app_commande_list') }}">
+                        <div class="material-symbols-outlined icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
+                            <span class="material-symbols-outlined">emoji_transportation</span>
 
+                        </div>
+                        <span class="nav-link-text ms-1">Commandes</span>
+                    </a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link  " href="../pages/rtl.html">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center me-2 d-flex align-items-center justify-content-center">
@@ -201,12 +209,81 @@
         </div>
     </aside>
 {% endblock  %}
-{% block title %}New Commande{% endblock %}
+{% block title %}Commande{% endblock %}
 
 {% block container %}
-    <h1>Create new Commande</h1>
+<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
 
-    {{ include('commande/_form.html.twig') }}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var containers = document.querySelectorAll('.qrcode-container');
+        containers.forEach(function(container) {
+            var reference = container.dataset.reference;
+            var qrcode = new QRCode(container, {
+                text: reference,
+                width: 100,
+                height: 100
+            });
+        });
+    });
+</script>
+    <h1>Liste des Livraisons</h1>
+    <h1 class="titre-rouge text-center">Recherche des livraisons par:</h1>
 
-    <a href="{{ path('app_commande_list') }}">back to list</a>
+                <form action="{{ path('search_livraisonadmin') }}" method="GET" class="form-petit text-center">
+                                        <div class="form-group">
+                                            <label for="recherchepar" class="sr-only">Recherche par</label>
+                                            <select id="recherchepar" name="recherche_par" class="form-control">
+                                                <option value="statutLivraison">statutLivraison</option>
+                                                <option value="adresse">adresseLivraison</option>
+                                                <!-- Ajoutez d'autres options de recherche ici -->
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cin1" class="sr-only">Valeur de recherche</label>
+                                            <input type="text" id="cin1" name="cin1" class="form-control" placeholder="Entrez la valeur de recherche">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Rechercher</button>
+                                            <a href="{{ path('app_livraison_indexAmin') }}" class="fas fa-sync-alt"></a>
+                </form>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>IdLivraison</th>
+                <th>DateLivraison</th>
+                <th>StatutLivraison</th>
+                <th>AdresseLivraison</th>
+                <th>MontantPaiement</th>
+                <th>ModeLivraison</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for livraison in livraisons %}
+            <tr>
+                <td>{{ livraison.idLivraison }}</td>
+                <td>{{ livraison.dateLivraison ? livraison.dateLivraison|date('Y-m-d') : '' }}</td>
+                <td>{{ livraison.statutLivraison }}</td>
+                <td>
+                <div class="qrcode-container" data-reference="{{ livraison.adresseLivraison }}"></div>
+                                        </td>
+
+                <td>{{ livraison.montantPaiement }}</td>
+                <td>{{ livraison.modeLivraison }}</td>
+                <td>
+                    <a href="{{ path('app_livraison_show', {'idLivraison': livraison.idLivraison}) }}">show</a>
+                    <a href="{{ path('app_livraison_edit', {'idLivraison': livraison.idLivraison}) }}">edit</a>
+                   <a href="{{ path('telecharger_pdf', {'idLivraison': livraison.idLivraison}) }}" class="btn btn-primary">Télécharger PDF</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_livraison_new') }}">Ajouter Une Nouvelle Livraison</a>
 {% endblock %}
